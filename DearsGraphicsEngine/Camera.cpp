@@ -21,7 +21,7 @@ Camera::Camera(int _screenWidth, int _screenHeight)
 	mIsFirstPersonMode = false;
 	mPrevMouseX = 0;
 	mPrevMouseY = 0;
-	isPerspective = true;
+	mIsPerspective = true;
 }
 
 Camera::~Camera()
@@ -74,7 +74,7 @@ Matrix Camera::GetViewRow()
 
 Matrix Camera::GetProjRow()
 {
-	if (isPerspective)
+	if (mIsPerspective)
 	{
 	return DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(mProjFovAngleY), mAspect, mNearZ, mFarZ);
 	}
@@ -91,14 +91,14 @@ void Camera::SetSpeed(float _speed)
 
 void Camera::SetPerspective()
 {
-	isPerspective = true;
+	mIsPerspective = true;
 }
 
 void Camera::SetOrthgraphic(float _scale)
 {
 	mOrthoGraphicScreenWidth = mScreenWidth * _scale;
 	mOrthoGraphicScreenHeight = mScreenHeight * _scale;
-	isPerspective = false;
+	mIsPerspective = false;
 }
 
 float Camera::GetSpeed()

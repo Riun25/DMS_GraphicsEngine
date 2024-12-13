@@ -6,8 +6,8 @@ Model* FBXLoadHelper::CopyModeldata(const aiScene* _pScene)
 
 	if (_pScene->mRootNode)
 	{
-		tempModel->mRootNode = new Node;
-		ProcessNode(_pScene->mRootNode, tempModel->mRootNode);
+		tempModel->mpRootNode = new Node;
+		ProcessNode(_pScene->mRootNode, tempModel->mpRootNode);
 	}
 
 	if (_pScene->mNumMeshes)
@@ -15,7 +15,7 @@ Model* FBXLoadHelper::CopyModeldata(const aiScene* _pScene)
 		tempModel->mNumMesh = _pScene->mNumMeshes;
 		//tempModel->mBasePath = _basePath;
 		Mesh* tempMeshArr = new Mesh[tempModel->mNumMesh];
-		tempModel->mMeshData = tempMeshArr;
+		tempModel->mpMeshData = tempMeshArr;
 		for (unsigned int i = 0; i < tempModel->mNumMesh; i++)
 		{
 			if (_pScene->mMeshes[i]->mNumVertices)
@@ -23,7 +23,7 @@ Model* FBXLoadHelper::CopyModeldata(const aiScene* _pScene)
 				const aiMesh* currentMesh = _pScene->mMeshes[i];
 				tempMeshArr[i].mMeshName = currentMesh->mName.C_Str();
 				tempMeshArr[i].mNumVertices = currentMesh->mNumVertices;
-				tempMeshArr[i].mVertices = new Vertex[tempMeshArr[i].mNumVertices];     //보유한 버텍스만큼 메모리 할당
+				tempMeshArr[i].mpVertices = new Vertex[tempMeshArr[i].mNumVertices];     //보유한 버텍스만큼 메모리 할당
 
 				Copy_AABB(currentMesh, &tempMeshArr[i]);
 
@@ -32,7 +32,7 @@ Model* FBXLoadHelper::CopyModeldata(const aiScene* _pScene)
 				//Copy_Texture(currentMesh, _pScene, tempMeshArr[i].mTextureName);
 
 				tempMeshArr[i].mNumBones = currentMesh->mNumBones;
-				Copy_Bone(currentMesh, tempMeshArr[i].mBone, tempModel->mRootNode);
+				Copy_Bone(currentMesh, tempMeshArr[i].mpBone, tempModel->mpRootNode);
 				SetVertexesBoneInfo(tempMeshArr[i]);
 			}
 		}
@@ -45,17 +45,17 @@ void FBXLoadHelper::Copy_Vertex(const aiMesh* _aiMesh, Mesh* _mesh)
 	unsigned int numTextureCoords = GetNumTextureCoords(_aiMesh);
 	for (unsigned int i = 0; i < _mesh->mNumVertices; i++)
 	{
-		_mesh->mVertices[i].mPosition.x = _aiMesh->mVertices[i].x;
-		_mesh->mVertices[i].mPosition.y = _aiMesh->mVertices[i].y;
-		_mesh->mVertices[i].mPosition.z = _aiMesh->mVertices[i].z;
+		_mesh->mpVertices[i].mPosition.x = _aiMesh->mVertices[i].x;
+		_mesh->mpVertices[i].mPosition.y = _aiMesh->mVertices[i].y;
+		_mesh->mpVertices[i].mPosition.z = _aiMesh->mVertices[i].z;
 
-		_mesh->mVertices[i].mNormal.x = _aiMesh->mNormals[i].x;
-		_mesh->mVertices[i].mNormal.y = _aiMesh->mNormals[i].y;
-		_mesh->mVertices[i].mNormal.z = _aiMesh->mNormals[i].z;
+		_mesh->mpVertices[i].mNormal.x = _aiMesh->mNormals[i].x;
+		_mesh->mpVertices[i].mNormal.y = _aiMesh->mNormals[i].y;
+		_mesh->mpVertices[i].mNormal.z = _aiMesh->mNormals[i].z;
 
 		//AABB세팅
 		auto& aabb = _mesh->mAABB;
-		const auto& vertex = _mesh->mVertices[i].mPosition;
+		const auto& vertex = _mesh->mpVertices[i].mPosition;
 		if (vertex.x < aabb.mMin.x)  aabb.mMin.x = vertex.x;
 		if (vertex.y < aabb.mMin.y)  aabb.mMin.y = vertex.y;
 		if (vertex.z < aabb.mMin.z)  aabb.mMin.z = vertex.z;
@@ -69,8 +69,8 @@ void FBXLoadHelper::Copy_Vertex(const aiMesh* _aiMesh, Mesh* _mesh)
 		{
 			if (_aiMesh->mTextureCoords[j])
 			{
-				_mesh->mVertices[i].mTexcoords[j].x = _aiMesh->mTextureCoords[j][i].x;
-				_mesh->mVertices[i].mTexcoords[j].y = _aiMesh->mTextureCoords[j][i].y;
+				_mesh->mpVertices[i].mTexcoords[j].x = _aiMesh->mTextureCoords[j][i].x;
+				_mesh->mpVertices[i].mTexcoords[j].y = _aiMesh->mTextureCoords[j][i].y;
 			}
 		}
 	}
@@ -132,7 +132,7 @@ void FBXLoadHelper::Copy_Bone(const aiMesh* _aiMesh, Bone*& _bone, Node* _target
 			_bone[i].mpVertexWeight[s].mWeight = aiBone->mWeights[s].mWeight;
 		}
 		std::string targetName = aiBone->mName.C_Str();
-		_bone[i].mTargetNode = GetTargetNode(targetName, _targetNode);
+		_bone[i].mpTargetNode = GetTargetNode(targetName, _targetNode);
 	}
 
 }
@@ -141,7 +141,7 @@ void FBXLoadHelper::SetVertexesBoneInfo(Mesh& _mesh)
 {
 	for (unsigned int i = 0; i < _mesh.mNumBones; i++)
 	{
-		auto& bone = _mesh.mBone[i];
+		auto& bone = _mesh.mpBone[i];
 
 		for (int j = 0; j < bone.mNumWeight; j++)
 		{
@@ -151,10 +151,10 @@ void FBXLoadHelper::SetVertexesBoneInfo(Mesh& _mesh)
 			// 정점의 본 인덱스 배열에서 미할당된(=UINT_MAX) 슬롯을 찾습니다.
 			for (unsigned int boneIndex = 0; boneIndex < MAX_BONES_INDICE; boneIndex++)
 			{
-				if (_mesh.mVertices[vertexIndex].mBoneIndex[boneIndex] == UINT_MAX)
+				if (_mesh.mpVertices[vertexIndex].mBoneIndex[boneIndex] == UINT_MAX)
 				{
-					_mesh.mVertices[vertexIndex].mBoneIndex[boneIndex] = i; // 현재 본의 인덱스를 할당합니다.
-					_mesh.mVertices[vertexIndex].mBoneWeights[boneIndex] = weight; // 해당 본의 가중치를 할당합니다.
+					_mesh.mpVertices[vertexIndex].mBoneIndex[boneIndex] = i; // 현재 본의 인덱스를 할당합니다.
+					_mesh.mpVertices[vertexIndex].mBoneWeights[boneIndex] = weight; // 해당 본의 가중치를 할당합니다.
 					break;
 				}
 			}
@@ -195,10 +195,10 @@ Animation* FBXLoadHelper::CopyAnimation(const aiScene* _pScene)
 			tempAnimation[i].mDuration = aiAnimation->mDuration;
 			tempAnimation[i].mTicksPerSecond = aiAnimation->mTicksPerSecond;
 			tempAnimation[i].mNumChannels = aiAnimation->mNumChannels;
-			tempAnimation[i].mChannels = new NodeAnimation[tempAnimation[i].mNumChannels];
+			tempAnimation[i].mpChannels = new NodeAnimation[tempAnimation[i].mNumChannels];
 			for (int j = 0; j < tempAnimation->mNumChannels; j++) 
 			{
-				auto& nodeAnim = tempAnimation->mChannels[j];
+				auto& nodeAnim = tempAnimation->mpChannels[j];
 				auto& aiNodeAnim = aiAnimation->mChannels[j];
 				std::string targetName = aiNodeAnim->mNodeName.C_Str();
 				Copy_NodeAnimationInfo(aiNodeAnim, nodeAnim);
@@ -218,30 +218,30 @@ void FBXLoadHelper::Copy_NodeAnimationInfo(const aiNodeAnim* _aiNodeAnim, NodeAn
 	_nodeAnim.mNumPosKeys = _aiNodeAnim->mNumPositionKeys;
 	_nodeAnim.mNumRotKeys = _aiNodeAnim->mNumRotationKeys;
 	_nodeAnim.mNumScaKeys = _aiNodeAnim->mNumScalingKeys;
-	_nodeAnim.mPosKey = new VecKey[_nodeAnim.mNumPosKeys];
-	_nodeAnim.mRotKey = new QuatKey[_nodeAnim.mNumRotKeys];
-	_nodeAnim.mScaKey = new VecKey[_nodeAnim.mNumScaKeys];
+	_nodeAnim.mpPosKey = new VecKey[_nodeAnim.mNumPosKeys];
+	_nodeAnim.mpRotKey = new QuatKey[_nodeAnim.mNumRotKeys];
+	_nodeAnim.mpScaKey = new VecKey[_nodeAnim.mNumScaKeys];
 	for (int i = 0; i < _nodeAnim.mNumPosKeys; i++)
 	{
-		_nodeAnim.mPosKey[i].mTime = _aiNodeAnim->mPositionKeys[i].mTime;
-		_nodeAnim.mPosKey[i].mValue.x = _aiNodeAnim->mPositionKeys[i].mValue.x;
-		_nodeAnim.mPosKey[i].mValue.y = _aiNodeAnim->mPositionKeys[i].mValue.y;
-		_nodeAnim.mPosKey[i].mValue.z = _aiNodeAnim->mPositionKeys[i].mValue.z;
+		_nodeAnim.mpPosKey[i].mTime = _aiNodeAnim->mPositionKeys[i].mTime;
+		_nodeAnim.mpPosKey[i].mValue.x = _aiNodeAnim->mPositionKeys[i].mValue.x;
+		_nodeAnim.mpPosKey[i].mValue.y = _aiNodeAnim->mPositionKeys[i].mValue.y;
+		_nodeAnim.mpPosKey[i].mValue.z = _aiNodeAnim->mPositionKeys[i].mValue.z;
 	}
 	for (int i = 0; i < _nodeAnim.mNumPosKeys; i++)
 	{
-		_nodeAnim.mRotKey[i].mTime = _aiNodeAnim->mPositionKeys[i].mTime;
-		_nodeAnim.mRotKey[i].mValue.x = _aiNodeAnim->mRotationKeys[i].mValue.x;
-		_nodeAnim.mRotKey[i].mValue.y = _aiNodeAnim->mRotationKeys[i].mValue.y;
-		_nodeAnim.mRotKey[i].mValue.z = _aiNodeAnim->mRotationKeys[i].mValue.z;
-		_nodeAnim.mRotKey[i].mValue.w = _aiNodeAnim->mRotationKeys[i].mValue.w;
+		_nodeAnim.mpRotKey[i].mTime = _aiNodeAnim->mPositionKeys[i].mTime;
+		_nodeAnim.mpRotKey[i].mValue.x = _aiNodeAnim->mRotationKeys[i].mValue.x;
+		_nodeAnim.mpRotKey[i].mValue.y = _aiNodeAnim->mRotationKeys[i].mValue.y;
+		_nodeAnim.mpRotKey[i].mValue.z = _aiNodeAnim->mRotationKeys[i].mValue.z;
+		_nodeAnim.mpRotKey[i].mValue.w = _aiNodeAnim->mRotationKeys[i].mValue.w;
 	}
 	for (int i = 0; i < _nodeAnim.mNumScaKeys; i++)
 	{
-		_nodeAnim.mScaKey[i].mTime = _aiNodeAnim->mScalingKeys[i].mTime;
-		_nodeAnim.mScaKey[i].mValue.x = _aiNodeAnim->mScalingKeys[i].mValue.x;
-		_nodeAnim.mScaKey[i].mValue.y = _aiNodeAnim->mScalingKeys[i].mValue.y;
-		_nodeAnim.mScaKey[i].mValue.z = _aiNodeAnim->mScalingKeys[i].mValue.z;
+		_nodeAnim.mpScaKey[i].mTime = _aiNodeAnim->mScalingKeys[i].mTime;
+		_nodeAnim.mpScaKey[i].mValue.x = _aiNodeAnim->mScalingKeys[i].mValue.x;
+		_nodeAnim.mpScaKey[i].mValue.y = _aiNodeAnim->mScalingKeys[i].mValue.y;
+		_nodeAnim.mpScaKey[i].mValue.z = _aiNodeAnim->mScalingKeys[i].mValue.z;
 	}
 }
 

@@ -305,12 +305,12 @@ Matrix GraphicsResourceContainer::SearchBoneMatrix(std::string _modelName, std::
 	auto& tempModel = mModels[_modelName];
 	for (int i = 0; i < tempModel->mNumMesh; i++)
 	{
-		auto& tempMesh = tempModel->mMeshData[i];
+		auto& tempMesh = tempModel->mpMeshData[i];
 		for (int j = 0; j < tempMesh.mNumBones; j++)
 		{
-			if (tempMesh.mBone[j].mBoneName == _boneName)
+			if (tempMesh.mpBone[j].mBoneName == _boneName)
 			{
-				return /*tempMesh.mBone[j].mOffsetMatrix**/ tempMesh.mBone[j].mTargetNode->mTransformation* tempMesh.mBone[j].mTargetNode->mWorldTransformation;
+				return /*tempMesh.mBone[j].mOffsetMatrix**/ tempMesh.mpBone[j].mpTargetNode->mTransformation* tempMesh.mpBone[j].mpTargetNode->mWorldTransformation;
 			}
 		}
 	}
@@ -323,12 +323,12 @@ Matrix GraphicsResourceContainer::SearchBoneAboveMatrix(std::string _modelName, 
 	auto& tempModel = mModels[_modelName];
 	for (int i = 0; i < tempModel->mNumMesh; i++)
 	{
-		auto& tempMesh = tempModel->mMeshData[i];
+		auto& tempMesh = tempModel->mpMeshData[i];
 		for (int j = 0; j < tempMesh.mNumBones; j++)
 		{
-			if (tempMesh.mBone[j].mBoneName == _boneName)
+			if (tempMesh.mpBone[j].mBoneName == _boneName)
 			{
-				return tempMesh.mBone[j].mTargetNode->mTransformation * tempMesh.mBone[j].mTargetNode->mWorldTransformation;
+				return tempMesh.mpBone[j].mpTargetNode->mTransformation * tempMesh.mpBone[j].mpTargetNode->mWorldTransformation;
 			}
 		}
 	}
@@ -339,7 +339,7 @@ Matrix GraphicsResourceContainer::SearchBoneAboveMatrix(std::string _modelName, 
 inline Matrix GraphicsResourceContainer::SearchBoneAboveMatrix(std::string _modelName, int _index)
 {
 	auto& tempModel = mModels[_modelName];
-	auto& tempMesh = tempModel->mMeshData[0];
+	auto& tempMesh = tempModel->mpMeshData[0];
 
-	return tempMesh.mBone[_index].mTargetNode->mTransformation * tempMesh.mBone[_index].mTargetNode->mWorldTransformation;
+	return tempMesh.mpBone[_index].mpTargetNode->mTransformation * tempMesh.mpBone[_index].mpTargetNode->mWorldTransformation;
 }

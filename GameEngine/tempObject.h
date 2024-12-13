@@ -52,18 +52,18 @@ public:
 	//물쉐이딩에 필요한 정보 UV좌표계를 윔직이게 하기위한.
 	VSWaterConstantBufferData mVSWaterConstantBufferData;
 
-	bool mIs_VSconstant;
-	bool mIs_VSBoneConstant;
-	bool mIs_VSTargetBoneConstant;
-	bool mIs_VSInstanceConstant;
-	bool mIs_PSconstant;
-	bool mIs_VSShadowConstant;
-	bool mIs_PSShadowConstant = false;
+	bool mIsVSconstant;
+	bool mIsVSBoneConstant;
+	bool mIsVSTargetBoneConstant;
+	bool mIsVSInstanceConstant;
+	bool mIsPSconstant;
+	bool mIsVSShadowConstant;
+	bool mIsPSShadowConstant = false;
 
-	bool mIs_VSEdgeConstant;
-	bool mIs_PSEdgeConstant;
+	bool mIsVSEdgeConstant;
+	bool mIsPSEdgeConstant;
 
-	bool mIs_VSWaterConstant = false;
+	bool mIsVSWaterConstant = false;
 
 
 	int mTargetBoneIndex;			//장비의 경우 타겟본의 인덱스를 알고 있어야한다. -> 똑같은 계산을 두번 안해도 된다.
@@ -72,31 +72,31 @@ public:
 public:
 	ModelBuffer* mpModelBuffer;
 
-	Matrix ObjectPos;
-	Matrix ObjectRot;
-	Matrix ObjectScl;
+	Matrix objectPos;
+	Matrix objectRot;
+	Matrix objectScl;
 
 public:
 	
 	void CreateVSConstantBuffer() 
 	{
-		mpModelBuffer->m_pVSConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mpVSConstantBufferData);
-		mIs_VSconstant = true;
+		mpModelBuffer->pVSConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mpVSConstantBufferData);
+		mIsVSconstant = true;
 	};
 
 	void CreateVSBoneConstantBuffer() 
 	{
-		mpModelBuffer->m_BoneConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mpVSBoneConstantBufferData); mIs_VSBoneConstant = true;
+		mpModelBuffer->pBoneConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mpVSBoneConstantBufferData); mIsVSBoneConstant = true;
 	};
 
 	void CreateVSTargetBoneConstantBuffer() 
 	{
-		mpModelBuffer->m_TargetBoneConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mpTargetBoneConstantBufferData); mIs_VSTargetBoneConstant = true;
+		mpModelBuffer->pTargetBoneConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mpTargetBoneConstantBufferData); mIsVSTargetBoneConstant = true;
 	};
 
 	void CreatePSConstantBuffer() 
 	{
-		mpModelBuffer->m_pPSConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mPSConstantBuffer);  mIs_PSconstant = true;
+		mpModelBuffer->pPSConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mPSConstantBuffer);  mIsPSconstant = true;
 	};
 
 	
@@ -107,27 +107,27 @@ public:
 		{
 			mpInstantConstantBufferData.world[i] = Matrix::CreateTranslation({ static_cast<float>(i),0,0 }).Transpose();
 			mpInstantConstantBufferData.world[i].Invert();
-			mpModelBuffer->mNumInstances++;
+			mpModelBuffer->numInstances++;
 		}
-		mpModelBuffer->m_InstanceConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mpInstantConstantBufferData); mIs_VSInstanceConstant = true;
+		mpModelBuffer->pInstanceConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mpInstantConstantBufferData); mIsVSInstanceConstant = true;
 	}
 
 	void CreateVSEdgeConstantBuffer()
 	{
-		mpModelBuffer->m_pVSEdgeConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mpVSConstantBufferData);
-		mIs_VSEdgeConstant = true;
+		mpModelBuffer->pVSEdgeConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mpVSConstantBufferData);
+		mIsVSEdgeConstant = true;
 	}
 	
 	void CreatePSEdgeConstantBuffer()
 	{
-		mpModelBuffer->m_pPSEdgeConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mPSEdgeConstantBufferData);
-		mIs_PSEdgeConstant = true;
+		mpModelBuffer->pPSEdgeConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mPSEdgeConstantBufferData);
+		mIsPSEdgeConstant = true;
 	}
 
 	void CreateVSWaterConstantBuffer()
 	{
-		mpModelBuffer->m_pVSWaterConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mVSWaterConstantBufferData);
-		mIs_VSWaterConstant = true;
+		mpModelBuffer->pVSWaterConstantBuffer = mpGraphicsEngine->CreateConstantBuffer(mVSWaterConstantBufferData);
+		mIsVSWaterConstant = true;
 	
 	}
 

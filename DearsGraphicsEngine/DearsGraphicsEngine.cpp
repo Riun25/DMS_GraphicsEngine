@@ -7,13 +7,13 @@
 
 DearsGraphicsEngine::DearsGraphicsEngine(HWND _hWnd, int screenWidth, int screenHeight)
 {
-	m_hWnd = _hWnd;
-	m_screenHeight = screenHeight;
-	m_screenWidth = screenWidth;
-	m_pResourceManager = nullptr;
+	mHWnd = _hWnd;
+	mScreenHeight = screenHeight;
+	mScreenWidth = screenWidth;
+	mpResourceManager = nullptr;
 	mpRenderer = nullptr;
-	m_pDearsImGui = nullptr;
-	m_pTargetCamera = nullptr;
+	mpDearsImGui = nullptr;
+	mpTargetCamera = nullptr;
 	mpAnimationHelper = nullptr;
 	mpLightHelper = nullptr;
 }
@@ -21,10 +21,10 @@ DearsGraphicsEngine::DearsGraphicsEngine(HWND _hWnd, int screenWidth, int screen
 DearsGraphicsEngine::~DearsGraphicsEngine()
 {
 
-	delete m_pDearsImGui;
+	delete mpDearsImGui;
 	delete mpRenderer;
-	delete m_pResourceManager;
-	delete m_pTargetCamera;
+	delete mpResourceManager;
+	delete mpTargetCamera;
 	delete mpAnimationHelper;
 
 }
@@ -33,72 +33,72 @@ void DearsGraphicsEngine::Initialize()
 {
 	//우선 디바이스 생성을 먼저한다. 	//  스왑 체인, 뷰 포트, 깊이 스텐실 , 렌더 타겟 뷰 생성등은 Renderer안의 InitalizeD3D함수 안에서한다.
 
-	RendererHelper::CreateDevice(m_pDevice, m_pDeviceContext);
+	RendererHelper::CreateDevice(mpDevice, mpDeviceContext);
 	
 	//렌더러 생성
-	mpRenderer = new Renderer(m_hWnd, 0, 0, m_screenWidth, m_screenHeight, m_pDevice, m_pDeviceContext);
-	mpRenderer->Initialize(m_pResourceManager);
+	mpRenderer = new Renderer(mHWnd, 0, 0, mScreenWidth, mScreenHeight, mpDevice, mpDeviceContext);
+	mpRenderer->Initialize(mpResourceManager);
 
 	//리소스 매니저 생성
-	m_pResourceManager = new GraphicsResourceManager(m_pDevice, m_pDeviceContext);
+	mpResourceManager = new GraphicsResourceManager(mpDevice, mpDeviceContext);
 
 	//애니메이션 헬퍼클래스 생성
 	mpAnimationHelper = new AnimationHelper();
 
 	//ImGUI 생성
-	m_pDearsImGui = new DearsImGui(m_hWnd, m_pDevice, m_pDeviceContext, m_screenWidth, m_screenHeight, m_pResourceManager);
+	mpDearsImGui = new DearsImGui(mHWnd, mpDevice, mpDeviceContext, mScreenWidth, mScreenHeight, mpResourceManager);
 	
 
 	//라이트 헬퍼생성
 	mpLightHelper = new LightHelper;
 
- 	Debug_ModelBuffer = new ModelBuffer;
+ 	mpDebugModelBuffer = new ModelBuffer;
 	AddModel("../TestAsset/", "Debug_Box.fbx");
 	AddModel("../TestAsset/", "Debug_Capsule.fbx");
 	AddModel("../TestAsset/", "Debug_Sphere.fbx");
 
  	VSConstantBufferData temp;
- 	Debug_ModelBuffer->m_pVSConstantBuffer = CreateConstantBuffer(temp);
+ 	mpDebugModelBuffer->pVSConstantBuffer = CreateConstantBuffer(temp);
 
-	Dears::Graphics::InitCommonStates(m_pDevice);
+	Dears::Graphics::InitCommonStates(mpDevice);
 
 	MeshData cubeMeshData = GeometryGenerator::MakeBox(1000);
 	std::reverse(cubeMeshData.indices.begin(), cubeMeshData.indices.end());
-	m_pResourceManager->AddModel(cubeMeshData, "CubeMap");
+	mpResourceManager->AddModel(cubeMeshData, "CubeMap");
 
 	MeshData SphereMeshData = GeometryGenerator::MakeSphere(1.f, 300, 300);
-	m_pResourceManager->AddModel(SphereMeshData, "MySphere");
+	mpResourceManager->AddModel(SphereMeshData, "MySphere");
 
 	MeshData SquareMeshData = GeometryGenerator::MakeSquare(1);
-	m_pResourceManager->AddModel(SquareMeshData, "MySquare");
+	mpResourceManager->AddModel(SquareMeshData, "MySquare");
 
 	MeshData BillBoardSquareMeshData = GeometryGenerator::BillboradSquare(1);
-	m_pResourceManager->AddModel(BillBoardSquareMeshData, "BillBoardSquare");
+	mpResourceManager->AddModel(BillBoardSquareMeshData, "BillBoardSquare");
 
 	MeshData boxMeshData = GeometryGenerator::MakeBox(1);
-	m_pResourceManager->AddModel(boxMeshData, "MyBox");
+	mpResourceManager->AddModel(boxMeshData, "MyBox");
 
-	m_pParticleManager = new ParticleManager(m_pDevice, m_pDeviceContext, MAX_PARTICLE);
-	m_pParticleManager->Initialize();
-	m_pParticleManager->SetVertexBufferAndIndexBuffer(m_pResourceManager->Get_VertexBuffer("BillBoardSquare"), 
-														m_pResourceManager->Get_IndexBuffer("BillBoardSquare"),
-														m_pResourceManager->Get_NumIndex("BillBoardSquare"));
-	PostProcessingBuffer = new ModelBuffer;
-	PostProcessingBuffer->m_pVertexBuffer = Get_VertexBuffer("BillBoardSquare");
-	PostProcessingBuffer->m_pIndexBuffer = Get_IndexBuffer("BillBoardSquare");
-	PostProcessingBuffer->mNumIndices = Get_NumIndex("BillBoardSquare");
+	mpParticleManager = new ParticleManager(mpDevice, mpDeviceContext, MAX_PARTICLE);
+	mpParticleManager->Initialize();
+	mpParticleManager->SetVertexBufferAndIndexBuffer(mpResourceManager->Get_VertexBuffer("BillBoardSquare"), 
+														mpResourceManager->Get_IndexBuffer("BillBoardSquare"),
+														mpResourceManager->Get_NumIndex("BillBoardSquare"));
+	mpPostProcessingBuffer = new ModelBuffer;
+	mpPostProcessingBuffer->pVertexBuffer = Get_VertexBuffer("BillBoardSquare");
+	mpPostProcessingBuffer->pIndexBuffer = Get_IndexBuffer("BillBoardSquare");
+	mpPostProcessingBuffer->numIndices = Get_NumIndex("BillBoardSquare");
 }
 
 void DearsGraphicsEngine::Update()
 {
-	m_pParticleManager->Update();
+	mpParticleManager->Update();
 }
 
 void DearsGraphicsEngine::BeginRender()
 {
 	mpRenderer->BeginRender();
 	UIBegineRender();
-	UICanvasSet(Vector2(0, 0), Vector2(static_cast<float>(m_screenWidth), static_cast<float>(m_screenHeight)));
+	UICanvasSet(Vector2(0, 0), Vector2(static_cast<float>(mScreenWidth), static_cast<float>(mScreenHeight)));
  	SetUICurrentWindow();
 }
 
@@ -118,29 +118,29 @@ void DearsGraphicsEngine::Finalize()
 
 void DearsGraphicsEngine::RendParticle()
 {
-	m_pParticleManager->Render();
+	mpParticleManager->Render();
 }
 
 void DearsGraphicsEngine::RendPostProcessing()
 {
-	mpRenderer->SetPipelineState(Dears::Graphics::samplerPSO);
+	mpRenderer->SetPipelineState(Dears::Graphics::gSamplerPSO);
 	for (int i = 0; i < 10; i++)
 	{
-	mpRenderer->RenderSampler(PostProcessingBuffer);
+	mpRenderer->RenderSampler(mpPostProcessingBuffer);
 
-	mpRenderer->SetPipelineState(Dears::Graphics::postEffectPSO);
-	mpRenderer->RenderPostProcessing(PostProcessingBuffer);
+	mpRenderer->SetPipelineState(Dears::Graphics::gPostEffectPSO);
+	mpRenderer->RenderPostProcessing(mpPostProcessingBuffer);
 	}
 }
 
 int DearsGraphicsEngine::GetScreenWidth() const
 {
-	return m_screenWidth;
+	return mScreenWidth;
 }
 
 int DearsGraphicsEngine::GetScreenHeight() const
 {
-	return m_screenHeight;
+	return mScreenHeight;
 }
 
 float DearsGraphicsEngine::GetAspectRatio()
@@ -151,211 +151,211 @@ float DearsGraphicsEngine::GetAspectRatio()
 
 void DearsGraphicsEngine::AddModel(std::string _basePath, std::string _fileName)
 {
-	m_pResourceManager->AddModel(_basePath, _fileName);
+	mpResourceManager->AddModel(_basePath, _fileName);
 }
 
 void DearsGraphicsEngine::AddAnimation(std::string _basePath, std::string _fileName)
 {
-	m_pResourceManager->AddAnimation(_basePath, _fileName);
+	mpResourceManager->AddAnimation(_basePath, _fileName);
 
 }
 
 void DearsGraphicsEngine::Add3DTexture(std::string _basePath, std::string _fileName)
 {
-	m_pResourceManager->Add3DTexture(_basePath, _fileName);
+	mpResourceManager->Add3DTexture(_basePath, _fileName);
 
 }
 
 void DearsGraphicsEngine::Add2DTexture(std::string _basePath, std::string _fileName)
 {
-	m_pResourceManager->Add2DTexture(_basePath, _fileName);
+	mpResourceManager->Add2DTexture(_basePath, _fileName);
 
 }
 void DearsGraphicsEngine::AddDDSTexture(std::string _basePath, std::string _fileName)
 {
-	m_pResourceManager->AddDDSTexture(_basePath, _fileName);
+	mpResourceManager->AddDDSTexture(_basePath, _fileName);
 
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::Get_VertexBuffer(std::string _modelName)
 {
-	return m_pResourceManager->Get_VertexBuffer(_modelName);
+	return mpResourceManager->Get_VertexBuffer(_modelName);
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::Get_IndexBuffer(std::string _modelName)
 {
-	return m_pResourceManager->Get_IndexBuffer(_modelName);
+	return mpResourceManager->Get_IndexBuffer(_modelName);
 }
 
 unsigned int DearsGraphicsEngine::Get_NumIndex(std::string _modelName)
 {
-	return m_pResourceManager->Get_NumIndex(_modelName);
+	return mpResourceManager->Get_NumIndex(_modelName);
 }
 
 Model* DearsGraphicsEngine::Get_ModelInfo(std::string _modelName)
 {
-	return m_pResourceManager->Get_ModelInfo(_modelName);
+	return mpResourceManager->Get_ModelInfo(_modelName);
 }
 
 Animation* DearsGraphicsEngine::Get_Animation(std::string _animeName)
 {
-	return m_pResourceManager->Get_Animation(_animeName);
+	return mpResourceManager->Get_Animation(_animeName);
 }
 
 ComPtr<ID3D11ShaderResourceView> DearsGraphicsEngine::Get_Textures(std::string _textureName)
 {
-	return m_pResourceManager->Get_Textures(_textureName);
+	return mpResourceManager->Get_Textures(_textureName);
 }
 
 ImFont* DearsGraphicsEngine::Get_Font(std::string _fontName)
 {
-	return m_pResourceManager->Get_Font(_fontName);
+	return mpResourceManager->Get_Font(_fontName);
 }
 
 int DearsGraphicsEngine::Get_TargetModelBoneIndex(std::string _modelName, std::string _boneName)
 {
-	return m_pResourceManager->Get_TargetModelBoneIndex(_modelName, _boneName);
+	return mpResourceManager->Get_TargetModelBoneIndex(_modelName, _boneName);
 }
 
 Matrix DearsGraphicsEngine::GetTargetBoneMatrix(std::string _targetModel, std::string _targetBoneName)
 {
-	return m_pResourceManager->Get_TargetBoneMatrix(_targetModel, _targetBoneName);
+	return mpResourceManager->Get_TargetBoneMatrix(_targetModel, _targetBoneName);
 }
 
 Matrix DearsGraphicsEngine::GetTargetBoneAboveMatrix(std::string _targetModel, std::string _targetBoneName, float _scale /*= 1.f*/)
 {
-	return m_pResourceManager->Get_TargetBoneAboveMatrix(_targetModel, _targetBoneName)* Matrix::CreateScale(_scale);
+	return mpResourceManager->Get_TargetBoneAboveMatrix(_targetModel, _targetBoneName)* Matrix::CreateScale(_scale);
 }
 
 Matrix DearsGraphicsEngine::GetTargetBoneAboveMatrix(std::string _targetModel, int _index, float _scale /*= 1.f*/)
 {
-	return m_pResourceManager->Get_TargetBoneAboveMatrix(_targetModel, _index) * Matrix::CreateScale(_scale);
+	return mpResourceManager->Get_TargetBoneAboveMatrix(_targetModel, _index) * Matrix::CreateScale(_scale);
 }
 
 AABB DearsGraphicsEngine::Get_AABB(std::string __targetModel)
 {
-	return m_pResourceManager->Get_ModelInfo(__targetModel)->mMeshData->mAABB;
+	return mpResourceManager->Get_ModelInfo(__targetModel)->mpMeshData->mAABB;
 }
 
 void DearsGraphicsEngine::Erase_VertexBuffer(std::string _modelName)
 {
-	m_pResourceManager->Erase_VertexBuffer(_modelName);
+	mpResourceManager->Erase_VertexBuffer(_modelName);
 }
 
 void DearsGraphicsEngine::Erase_IndexBuffer(std::string _modelName)
 {
-	m_pResourceManager->Erase_IndexBuffer(_modelName);
+	mpResourceManager->Erase_IndexBuffer(_modelName);
 }
 
 void DearsGraphicsEngine::Erase_NumIndex(std::string _modelName)
 {
-	m_pResourceManager->Erase_NumIndex(_modelName);
+	mpResourceManager->Erase_NumIndex(_modelName);
 }
 
 void DearsGraphicsEngine::Erase_ModelInfo(std::string _modelName)
 {
-	m_pResourceManager->Erase_ModelInfo(_modelName);
+	mpResourceManager->Erase_ModelInfo(_modelName);
 }
 
 void DearsGraphicsEngine::Erase_Animation(std::string _animName)
 {
-	m_pResourceManager->Erase_Animation(_animName);
+	mpResourceManager->Erase_Animation(_animName);
 }
 
 void DearsGraphicsEngine::Erase_Textures(std::string _textureName)
 {
-	m_pResourceManager->Erase_Textures(_textureName);
+	mpResourceManager->Erase_Textures(_textureName);
 }
 
 void DearsGraphicsEngine::Erase_Font(std::string _fontName)
 {
-	m_pResourceManager->Erase_Font(_fontName);
+	mpResourceManager->Erase_Font(_fontName);
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::CreateConstantBuffer(VSConstantBufferData& _VsConstantBufferData)
 {
-	return RendererHelper::CreateConstantBuffer(m_pDevice, _VsConstantBufferData);
+	return RendererHelper::CreateConstantBuffer(mpDevice, _VsConstantBufferData);
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::CreateConstantBuffer(VSBoneConstantBufferData& _VsBoneConstantBufferData)
 {
-	return RendererHelper::CreateConstantBuffer(m_pDevice, _VsBoneConstantBufferData);
+	return RendererHelper::CreateConstantBuffer(mpDevice, _VsBoneConstantBufferData);
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::CreateConstantBuffer(VSTargetBoneConstantBufferData& _VsTargetBoneConstantBufferData)
 {
-	return RendererHelper::CreateConstantBuffer(m_pDevice, _VsTargetBoneConstantBufferData);
+	return RendererHelper::CreateConstantBuffer(mpDevice, _VsTargetBoneConstantBufferData);
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::CreateConstantBuffer(PSConstantBufferData& _PsConstantBufferData)
 {
-	return RendererHelper::CreateConstantBuffer(m_pDevice, _PsConstantBufferData);
+	return RendererHelper::CreateConstantBuffer(mpDevice, _PsConstantBufferData);
 }
 
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::CreateConstantBuffer(VSShadowConstantBufferData& _VsShadowConstantBufferData)
 {
-	return RendererHelper::CreateConstantBuffer(m_pDevice, _VsShadowConstantBufferData);
+	return RendererHelper::CreateConstantBuffer(mpDevice, _VsShadowConstantBufferData);
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::CreateConstantBuffer(PsShadowConstantBufferData& _PsShadowConstantBufferData)
 {
-	return RendererHelper::CreateConstantBuffer(m_pDevice, _PsShadowConstantBufferData);
+	return RendererHelper::CreateConstantBuffer(mpDevice, _PsShadowConstantBufferData);
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::CreateConstantBuffer(CommonConstantBufferData& _CommonConstantBufferData)
 {
-	return RendererHelper::CreateConstantBuffer(m_pDevice, _CommonConstantBufferData);
+	return RendererHelper::CreateConstantBuffer(mpDevice, _CommonConstantBufferData);
 
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::CreateConstantBuffer(VSInstantConstantBufferData& _VSInstantConstantBufferData)
 {
-	return RendererHelper::CreateConstantBuffer(m_pDevice, _VSInstantConstantBufferData);
+	return RendererHelper::CreateConstantBuffer(mpDevice, _VSInstantConstantBufferData);
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::CreateConstantBuffer(PSEdgeConstantBufferData& _pPSEdgeConstantBufferData)
 {
-	return RendererHelper::CreateConstantBuffer(m_pDevice, _pPSEdgeConstantBufferData);
+	return RendererHelper::CreateConstantBuffer(mpDevice, _pPSEdgeConstantBufferData);
 }
 
 ComPtr<ID3D11Buffer> DearsGraphicsEngine::CreateStructuredBuffer(CSParticleData& _TestCSParticleData, unsigned int _count)
 {
-	return RendererHelper::CreateStructuredBuffer(m_pDevice, _TestCSParticleData, _count);
+	return RendererHelper::CreateStructuredBuffer(mpDevice, _TestCSParticleData, _count);
 }
 
 void DearsGraphicsEngine::UpdateConstantBuffer(ModelBuffer* _pModelBuffer, VSConstantBufferData& _VsConstantBufferData)
 {
-	RendererHelper::UpdateBuffer(m_pDeviceContext, _VsConstantBufferData, _pModelBuffer->m_pVSConstantBuffer);
+	RendererHelper::UpdateBuffer(mpDeviceContext, _VsConstantBufferData, _pModelBuffer->pVSConstantBuffer);
 }
 
 void DearsGraphicsEngine::UpdateConstantBuffer(ModelBuffer* _pModelBuffer, PSConstantBufferData& _PsConstantBufferData)
 {
-	RendererHelper::UpdateBuffer(m_pDeviceContext, _PsConstantBufferData, _pModelBuffer->m_pPSConstantBuffer);
+	RendererHelper::UpdateBuffer(mpDeviceContext, _PsConstantBufferData, _pModelBuffer->pPSConstantBuffer);
 }
 
 void DearsGraphicsEngine::UpdateVSEdgeConstantBuffer(ModelBuffer* _pModelBuffer, VSEdgeConstantBufferData& _pPSEdgeConstantBuffer)
 {
-	RendererHelper::UpdateBuffer(m_pDeviceContext, _pPSEdgeConstantBuffer, _pModelBuffer->m_pVSEdgeConstantBuffer);
+	RendererHelper::UpdateBuffer(mpDeviceContext, _pPSEdgeConstantBuffer, _pModelBuffer->pVSEdgeConstantBuffer);
 
 }
 
 void DearsGraphicsEngine::UpdatePSEdgeConstantBuffer(ModelBuffer* _pModelBuffer, PSEdgeConstantBufferData& _pPSEdgeConstantBuffer)
 {
-	RendererHelper::UpdateBuffer(m_pDeviceContext, _pPSEdgeConstantBuffer, _pModelBuffer->m_pPSEdgeConstantBuffer);
+	RendererHelper::UpdateBuffer(mpDeviceContext, _pPSEdgeConstantBuffer, _pModelBuffer->pPSEdgeConstantBuffer);
 }
 
 void DearsGraphicsEngine::UpdateVSWaterConstantBuffer(ModelBuffer* _pModelBuffer, VSWaterConstantBufferData& _pVSWaterConstantBuffer)
 {
-	RendererHelper::UpdateBuffer(m_pDeviceContext, _pVSWaterConstantBuffer, _pModelBuffer->m_pVSWaterConstantBuffer);
+	RendererHelper::UpdateBuffer(mpDeviceContext, _pVSWaterConstantBuffer, _pModelBuffer->pVSWaterConstantBuffer);
 
 }
 
 void DearsGraphicsEngine::UpdateCommonConstantBuffer(CommonConstantBufferData& _CommonBufferData)
 {
- 	_CommonBufferData.view = m_pTargetCamera->GetViewRow().Transpose();		// 시점 변환
- 	_CommonBufferData.proj = m_pTargetCamera->GetProjRow().Transpose();
- 	_CommonBufferData.viewProj = (m_pTargetCamera->GetViewRow() * m_pTargetCamera->GetProjRow()).Transpose();
+ 	_CommonBufferData.view = mpTargetCamera->GetViewRow().Transpose();		// 시점 변환
+ 	_CommonBufferData.proj = mpTargetCamera->GetProjRow().Transpose();
+ 	_CommonBufferData.viewProj = (mpTargetCamera->GetViewRow() * mpTargetCamera->GetProjRow()).Transpose();
 
 	_CommonBufferData.invView = _CommonBufferData.view.Invert();
  	_CommonBufferData.invProj = _CommonBufferData.proj.Invert();
@@ -363,7 +363,7 @@ void DearsGraphicsEngine::UpdateCommonConstantBuffer(CommonConstantBufferData& _
 	//그림자 렌더링에 사용
  	_CommonBufferData.invViewProj = _CommonBufferData.viewProj.Invert();
 
-	_CommonBufferData.eyeWorld = m_pTargetCamera->GetmViewPos();
+	_CommonBufferData.eyeWorld = mpTargetCamera->GetmViewPos();
 
 	mpRenderer->UpdateCommonConstantBuffer(_CommonBufferData);
 	
@@ -383,8 +383,8 @@ void DearsGraphicsEngine::Set_CubeMap(std::string diffuseTextureName, std::strin
 {
 	mpRenderer->SetCommonShaderResource
 	(
-		m_pResourceManager->Get_Textures(diffuseTextureName),
-		m_pResourceManager->Get_Textures(specularTextureName)
+		mpResourceManager->Get_Textures(diffuseTextureName),
+		mpResourceManager->Get_Textures(specularTextureName)
 	);
 }
 
@@ -392,27 +392,27 @@ void DearsGraphicsEngine::Set_CubeMap(std::string diffuseTextureName, std::strin
 void DearsGraphicsEngine::UpdateBoneConstantBuffer(ModelBuffer* _pModelBuffer, VSBoneConstantBufferData& _VsBoneConstantBufferData)
 {
 	mpAnimationHelper->UpdateBoneConstant(
-		_pModelBuffer->mpTargetModel,
-		_pModelBuffer->mpTargetAnimation,
+		_pModelBuffer->pTargetModel,
+		_pModelBuffer->pTargetAnimation,
 		_VsBoneConstantBufferData,
-		_pModelBuffer->mAnimationPlaytime
+		_pModelBuffer->animationPlaytime
 		);
-	RendererHelper::UpdateBuffer(m_pDeviceContext, _VsBoneConstantBufferData, _pModelBuffer->m_BoneConstantBuffer);
+	RendererHelper::UpdateBuffer(mpDeviceContext, _VsBoneConstantBufferData, _pModelBuffer->pBoneConstantBuffer);
 }
 ///
 bool DearsGraphicsEngine::UpdateTransitionBoneConstantBuffer(ModelBuffer* _pModelBuffer, VSBoneConstantBufferData& _VsBoneConstantBufferData)
 {
 	if (mpAnimationHelper->UpdateBoneConstant(
-		_pModelBuffer->mpTargetModel,
-		_pModelBuffer->mpTargetAnimation,
-		_pModelBuffer->mpNextTargetAnimation,
+		_pModelBuffer->pTargetModel,
+		_pModelBuffer->pTargetAnimation,
+		_pModelBuffer->pNextTargetAnimation,
 		_VsBoneConstantBufferData,
-		_pModelBuffer->mAnimationPlaytime,
-		_pModelBuffer->mNextAnimationPlaytime)
+		_pModelBuffer->animationPlaytime,
+		_pModelBuffer->nextAnimationPlaytime)
 		)
 	{
 		
-		RendererHelper::UpdateBuffer(m_pDeviceContext, _VsBoneConstantBufferData, _pModelBuffer->m_BoneConstantBuffer);
+		RendererHelper::UpdateBuffer(mpDeviceContext, _VsBoneConstantBufferData, _pModelBuffer->pBoneConstantBuffer);
 		return true;
 	}
 	else
@@ -423,7 +423,7 @@ bool DearsGraphicsEngine::UpdateTransitionBoneConstantBuffer(ModelBuffer* _pMode
 
 void DearsGraphicsEngine::UpdateTargetBoneConstantBuffer(ModelBuffer* _pModelBuffer, VSTargetBoneConstantBufferData& _VsTargetBoneConstantBufferData)
 {
-	RendererHelper::UpdateBuffer(m_pDeviceContext, _VsTargetBoneConstantBufferData, _pModelBuffer->m_TargetBoneConstantBuffer);
+	RendererHelper::UpdateBuffer(mpDeviceContext, _VsTargetBoneConstantBufferData, _pModelBuffer->pTargetBoneConstantBuffer);
 }
 
 void DearsGraphicsEngine::SetPipelineState(PipelineStateObject& _pso)
@@ -433,19 +433,19 @@ void DearsGraphicsEngine::SetPipelineState(PipelineStateObject& _pso)
 
 void DearsGraphicsEngine::Rend_AnimateModel(ModelBuffer* _modelBuffer)
 {
-	SetPipelineState(Dears::Graphics::AnimeGeometryPSO);
+	SetPipelineState(Dears::Graphics::gAnimeGeometryPSO);
 	mpRenderer->Render(_modelBuffer);
 }
 
 void DearsGraphicsEngine::Rend_Model(ModelBuffer* _modelBuffer)
 {
-	SetPipelineState(Dears::Graphics::BasicGeometryPSO);
+	SetPipelineState(Dears::Graphics::gBasicGeometryPSO);
 	mpRenderer->Render(_modelBuffer);
 }
 
 void DearsGraphicsEngine::Rend_EquipmentModel(ModelBuffer* _modelBuffer)
 {
-	SetPipelineState(Dears::Graphics::EquipmentGeometryPSO);
+	SetPipelineState(Dears::Graphics::gEquipmentGeometryPSO);
 	mpRenderer->Render(_modelBuffer);
 }
 
@@ -453,28 +453,28 @@ void DearsGraphicsEngine::SetOpacityFactor(float blendFactor[4])
 {
 	for (int i = 0; i < 4; i++)
 	{
-	Dears::Graphics::OpacityPSO.m_blendFactor[i] = blendFactor[i];
+	Dears::Graphics::gOpacityPSO.mBlendFactor[i] = blendFactor[i];
 	}
 }
 
 void DearsGraphicsEngine::Rend_OpacitiyModel(ModelBuffer* _modelBuffer)
 {
-	SetPipelineState(Dears::Graphics::OpacityPSO);
+	SetPipelineState(Dears::Graphics::gOpacityPSO);
 	mpRenderer->Render(_modelBuffer);
 }
 
 void DearsGraphicsEngine::Rend_EdgeModel(ModelBuffer* _modelBuffer)
 {
-	SetPipelineState(Dears::Graphics::PunchingPSO);
+	SetPipelineState(Dears::Graphics::gPunchingPSO);
 	mpRenderer->Render(_modelBuffer);
-	SetPipelineState(Dears::Graphics::EdgePSO);
+	SetPipelineState(Dears::Graphics::gEdgePSO);
 	mpRenderer->RenderEdge(_modelBuffer);
 
 }
 
 void DearsGraphicsEngine::Rend_Water(ModelBuffer* _modelBuffer)
 {
-	SetPipelineState(Dears::Graphics::WaterPSO);
+	SetPipelineState(Dears::Graphics::gWaterPSO);
 	mpRenderer->Render(_modelBuffer);
 }
 
@@ -495,60 +495,60 @@ void DearsGraphicsEngine::RenderEquipDepthMap(ModelBuffer* _modelbuffer)
 
 void DearsGraphicsEngine::Rend_InstancedModels(ModelBuffer* _modelbuffers)
 {
-	SetPipelineState(Dears::Graphics::BasicInstancingPSO);
+	SetPipelineState(Dears::Graphics::gBasicInstancingPSO);
 	///여기서 렌더러를 거쳐 렌더링이 가능하도록
 	mpRenderer->Rend_InstancedModels(_modelbuffers);
 }
 
 void DearsGraphicsEngine::Rend_BillBoard(ModelBuffer* _modelbuffers)
 {
-	SetPipelineState(Dears::Graphics::TestPSO);
+	SetPipelineState(Dears::Graphics::gTestPSO);
 	mpRenderer->Render(_modelbuffers);
 
 }
 
 void DearsGraphicsEngine::Rend_DebugBox(Vector3 _size, Vector3 _rotation, Vector3 _transpose)
 {
-	SetPipelineState(Dears::Graphics::DebugGeometryPSO);
-	Debug_ModelBuffer->m_pVertexBuffer = Get_VertexBuffer("Box");
-	Debug_ModelBuffer->m_pIndexBuffer = Get_IndexBuffer("Box");
-	Debug_ModelBuffer->mNumIndices = Get_NumIndex("Box");
+	SetPipelineState(Dears::Graphics::gDebugGeometryPSO);
+	mpDebugModelBuffer->pVertexBuffer = Get_VertexBuffer("Box");
+	mpDebugModelBuffer->pIndexBuffer = Get_IndexBuffer("Box");
+	mpDebugModelBuffer->numIndices = Get_NumIndex("Box");
 	VSConstantBufferData temp;
 	temp.world = (Matrix::CreateScale(_size) * Matrix::CreateRotationX(_rotation.x) * Matrix::CreateRotationY(_rotation.y) *
 		Matrix::CreateRotationZ(_rotation.z) * Matrix::CreateTranslation(_transpose)).Transpose();
-	UpdateConstantBuffer(Debug_ModelBuffer, temp);
-	mpRenderer->Render(Debug_ModelBuffer);
+	UpdateConstantBuffer(mpDebugModelBuffer, temp);
+	mpRenderer->Render(mpDebugModelBuffer);
 
 }
 
 void DearsGraphicsEngine::Rend_DebugBox(Matrix _size, Matrix _rotation, Matrix _transpose)
 {
-	SetPipelineState(Dears::Graphics::DebugGeometryPSO);
-	Debug_ModelBuffer->m_pVertexBuffer = Get_VertexBuffer("Box");
-	Debug_ModelBuffer->m_pIndexBuffer = Get_IndexBuffer("Box");
-	Debug_ModelBuffer->mNumIndices = Get_NumIndex("Box");
+	SetPipelineState(Dears::Graphics::gDebugGeometryPSO);
+	mpDebugModelBuffer->pVertexBuffer = Get_VertexBuffer("Box");
+	mpDebugModelBuffer->pIndexBuffer = Get_IndexBuffer("Box");
+	mpDebugModelBuffer->numIndices = Get_NumIndex("Box");
 
 	VSConstantBufferData temp;
  	temp.world = (_size * _rotation * _transpose).Transpose();
 
-	UpdateConstantBuffer(Debug_ModelBuffer, temp);
+	UpdateConstantBuffer(mpDebugModelBuffer, temp);
 
-	mpRenderer->Render(Debug_ModelBuffer);
+	mpRenderer->Render(mpDebugModelBuffer);
 }
 
 void DearsGraphicsEngine::Rend_DebugBox(Matrix _size, Matrix _rotation, Matrix _transpose, Matrix _tempMatrix = Matrix())
 {
-	SetPipelineState(Dears::Graphics::DebugGeometryPSO);
-	Debug_ModelBuffer->m_pVertexBuffer = Get_VertexBuffer("Box");
-	Debug_ModelBuffer->m_pIndexBuffer = Get_IndexBuffer("Box");
-	Debug_ModelBuffer->mNumIndices = Get_NumIndex("Box");
+	SetPipelineState(Dears::Graphics::gDebugGeometryPSO);
+	mpDebugModelBuffer->pVertexBuffer = Get_VertexBuffer("Box");
+	mpDebugModelBuffer->pIndexBuffer = Get_IndexBuffer("Box");
+	mpDebugModelBuffer->numIndices = Get_NumIndex("Box");
 	VSConstantBufferData temp;
 	temp.world = _size * _rotation * _transpose* _tempMatrix;
 	temp.world = temp.world.Transpose();
 	
-	UpdateConstantBuffer(Debug_ModelBuffer, temp);
+	UpdateConstantBuffer(mpDebugModelBuffer, temp);
 
-	mpRenderer->Render(Debug_ModelBuffer);
+	mpRenderer->Render(mpDebugModelBuffer);
 }
 
 void DearsGraphicsEngine::Rend_DebugBox(AABB& _AABB, Matrix Scale, Matrix _rotation, Matrix _tempMatrix )
@@ -572,152 +572,152 @@ void DearsGraphicsEngine::Rend_DebugBox(AABB& _AABB, Matrix Scale, Matrix _rotat
 
 void DearsGraphicsEngine::Rend_DebugSphere(Vector3 _size, Vector3 _rotation, Vector3 _transpose)
 {
-	SetPipelineState(Dears::Graphics::DebugGeometryPSO);
-	Debug_ModelBuffer->m_pVertexBuffer = Get_VertexBuffer("Sphere");
-	Debug_ModelBuffer->m_pIndexBuffer = Get_IndexBuffer("Sphere");
-	Debug_ModelBuffer->mNumIndices = Get_NumIndex("Sphere");
+	SetPipelineState(Dears::Graphics::gDebugGeometryPSO);
+	mpDebugModelBuffer->pVertexBuffer = Get_VertexBuffer("Sphere");
+	mpDebugModelBuffer->pIndexBuffer = Get_IndexBuffer("Sphere");
+	mpDebugModelBuffer->numIndices = Get_NumIndex("Sphere");
 
 	VSConstantBufferData temp;
 	temp.world = (Matrix::CreateScale(_size) * Matrix::CreateRotationX(_rotation.x) * Matrix::CreateRotationY(_rotation.y) *
 		Matrix::CreateRotationZ(_rotation.z) * Matrix::CreateTranslation(_transpose)).Transpose();
 
-	UpdateConstantBuffer(Debug_ModelBuffer, temp);
+	UpdateConstantBuffer(mpDebugModelBuffer, temp);
 
-	mpRenderer->Render(Debug_ModelBuffer);
+	mpRenderer->Render(mpDebugModelBuffer);
 }
 
 void DearsGraphicsEngine::Rend_DebugCapsule(Vector3 _size, Vector3 _rotation, Vector3 _transpose)
 {
-	SetPipelineState(Dears::Graphics::DebugGeometryPSO);
-	Debug_ModelBuffer->m_pVertexBuffer = Get_VertexBuffer("Capsule");
-	Debug_ModelBuffer->m_pIndexBuffer = Get_IndexBuffer("Capsule");
-	Debug_ModelBuffer->mNumIndices = Get_NumIndex("Capsule");
+	SetPipelineState(Dears::Graphics::gDebugGeometryPSO);
+	mpDebugModelBuffer->pVertexBuffer = Get_VertexBuffer("Capsule");
+	mpDebugModelBuffer->pIndexBuffer = Get_IndexBuffer("Capsule");
+	mpDebugModelBuffer->numIndices = Get_NumIndex("Capsule");
 
 	VSConstantBufferData temp;
 	temp.world = (Matrix::CreateScale(_size) * Matrix::CreateRotationX(_rotation.x) * Matrix::CreateRotationY(_rotation.y) *
 		Matrix::CreateRotationZ(_rotation.z) * Matrix::CreateTranslation(_transpose)).Transpose();
 
-	UpdateConstantBuffer(Debug_ModelBuffer, temp);
+	UpdateConstantBuffer(mpDebugModelBuffer, temp);
 
-	mpRenderer->Render(Debug_ModelBuffer);
+	mpRenderer->Render(mpDebugModelBuffer);
 }
 
 void DearsGraphicsEngine::Rend_CubeMap(ModelBuffer* _modelBuffer)
 {
-	SetPipelineState(Dears::Graphics::CubeMapGeometryPSO);
+	SetPipelineState(Dears::Graphics::gCubeMapGeometryPSO);
 	mpRenderer->Render_CubeMap(_modelBuffer);
 }
 
 void DearsGraphicsEngine::SetCamera(Camera* _pTargetCamera)
 {
-	m_pTargetCamera=_pTargetCamera;
+	mpTargetCamera=_pTargetCamera;
 }
 
 void DearsGraphicsEngine::AddFont(std::string _basePath, std::string _fileName, float _size, bool _isKorean)
 {
-	m_pDearsImGui->UILoadFonts(_basePath, _fileName, _size, _isKorean);
+	mpDearsImGui->UILoadFonts(_basePath, _fileName, _size, _isKorean);
 }
 
 void DearsGraphicsEngine::FontSetFinish()
 {
-	m_pDearsImGui->UIBuildFonts();
+	mpDearsImGui->UIBuildFonts();
 }
 
 void DearsGraphicsEngine::UIBegineRender()
 {
-	m_pDearsImGui->UIBeginRender();
+	mpDearsImGui->UIBeginRender();
 }
 
 void DearsGraphicsEngine::UICanvasSet(Vector2 _posXY, Vector2 _sizeWH)
 {
-	m_pDearsImGui->UICanvasSet(_posXY, _sizeWH);
+	mpDearsImGui->UICanvasSet(_posXY, _sizeWH);
 }
 
 void DearsGraphicsEngine::UIDrawImageStart()
 {
-	m_pDearsImGui->UIDrawImageStart();
+	mpDearsImGui->UIDrawImageStart();
 }
 
 void DearsGraphicsEngine::UIDrawImage(Vector2 _posXY, Vector2 _sizeWH, std::string _textureName, Vector4 _rgba /*= Vector4(1.0f, 1.0f, 1.0f, 1.0f)*/)
 {
-	ComPtr<ID3D11ShaderResourceView> tempSRV = m_pResourceManager->Get_Textures(_textureName);
-	m_pDearsImGui->UIDrawImage(_posXY, _sizeWH, tempSRV, _rgba);
+	ComPtr<ID3D11ShaderResourceView> tempSRV = mpResourceManager->Get_Textures(_textureName);
+	mpDearsImGui->UIDrawImage(_posXY, _sizeWH, tempSRV, _rgba);
 }
 
 void DearsGraphicsEngine::UIDrawImageFin()
 {
-	m_pDearsImGui->UIDrawImageFin();
+	mpDearsImGui->UIDrawImageFin();
 }
 
 void DearsGraphicsEngine::UIStartFontID(std::string _fontName)
 {
-	m_pDearsImGui->UIStartFontID(m_pResourceManager->Get_Font(_fontName));
+	mpDearsImGui->UIStartFontID(mpResourceManager->Get_Font(_fontName));
 }
 
 void DearsGraphicsEngine::UIDrawText(Vector2 _pos, std::u8string _text, Vector4 _rgba)
 {
-	m_pDearsImGui->UIDrawText(_pos, m_pDearsImGui->ConvertUTF8String(_text), _rgba);
+	mpDearsImGui->UIDrawText(_pos, mpDearsImGui->ConvertUTF8String(_text), _rgba);
 }
 
 void DearsGraphicsEngine::UIFinFontID()
 {
-	m_pDearsImGui->UIEndFontID();
+	mpDearsImGui->UIEndFontID();
 }
 
 void DearsGraphicsEngine::SetUICurrentWindow()
 {
-	m_pDearsImGui->SetUICurrentWindow();
+	mpDearsImGui->SetUICurrentWindow();
 }
 
 void DearsGraphicsEngine::UIDrawRect(Vector2 _posXY, Vector2 _sizeWH, Vector4 _rgba, float _rounding /*= 0.0f*/, float _thickness)
 {
-	m_pDearsImGui->UIDrawRect(_posXY, _sizeWH, _rgba, _rounding, _thickness);
+	mpDearsImGui->UIDrawRect(_posXY, _sizeWH, _rgba, _rounding, _thickness);
 }
 
 void DearsGraphicsEngine::UIDrawRectFilled(Vector2 _posXY, Vector2 _sizeWH, Vector4 _rgba, float _rounding /*= 0.0f*/)
 {
-	m_pDearsImGui->UIDrawRectFilled(_posXY, _sizeWH, _rgba, _rounding);
+	mpDearsImGui->UIDrawRectFilled(_posXY, _sizeWH, _rgba, _rounding);
 }
 
 void DearsGraphicsEngine::UIDrawRectwithBorder(Vector2 _posXY, Vector2 _sizeWH, Vector4 _rgba, float _rounding /*= 0.0f*/, float _thickness)
 {
-	m_pDearsImGui->UIDrawRectwithBorder(_posXY, _sizeWH, _rgba, _rounding, _thickness);
+	mpDearsImGui->UIDrawRectwithBorder(_posXY, _sizeWH, _rgba, _rounding, _thickness);
 }
 
 void DearsGraphicsEngine::UIFreeRect(Vector2 _posXY1, Vector2 _posXY2, Vector2 _posXY3, Vector2 _posXY4, Vector4 _rgba, float _thickness)
 {
-	m_pDearsImGui->UIFreeRect(_posXY1, _posXY2, _posXY3, _posXY4, _rgba, _thickness);
+	mpDearsImGui->UIFreeRect(_posXY1, _posXY2, _posXY3, _posXY4, _rgba, _thickness);
 }
 
 void DearsGraphicsEngine::UIFreeRectFilled(Vector2 _posXY1, Vector2 _posXY2, Vector2 _posXY3, Vector2 _posXY4, Vector4 _rgba)
 {
-	m_pDearsImGui->UIFreeRectFilled(_posXY1, _posXY2, _posXY3, _posXY4, _rgba);
+	mpDearsImGui->UIFreeRectFilled(_posXY1, _posXY2, _posXY3, _posXY4, _rgba);
 }
 
 void DearsGraphicsEngine::UIFreeRectwithBorder(Vector2 _posXY1, Vector2 _posXY2, Vector2 _posXY3, Vector2 _posXY4, Vector4 _rgba, float _thickness, Vector4 _borderRgba)
 {
-	m_pDearsImGui->UIFreeRectwithBorder(_posXY1, _posXY2, _posXY3, _posXY4, _rgba, _thickness, _borderRgba);
+	mpDearsImGui->UIFreeRectwithBorder(_posXY1, _posXY2, _posXY3, _posXY4, _rgba, _thickness, _borderRgba);
 }
 
 void DearsGraphicsEngine::UIDrawLine(Vector2 _sPosXY, Vector2 _ePosXY, Vector4 _rgba)
 {
-	m_pDearsImGui->UIDrawLine(_sPosXY, _ePosXY, _rgba);
+	mpDearsImGui->UIDrawLine(_sPosXY, _ePosXY, _rgba);
 }
 
 void DearsGraphicsEngine::UIDrawCir(Vector2 _posXY, float _radius, Vector4 _rgba)
 {
-	m_pDearsImGui->UIDrawCircle(_posXY, _radius, _rgba);
+	mpDearsImGui->UIDrawCircle(_posXY, _radius, _rgba);
 }
 
 void DearsGraphicsEngine::RenderImGui()
 {
-	m_pDearsImGui->UICanvasSetFin();
-	m_pDearsImGui->UIRender();
+	mpDearsImGui->UICanvasSetFin();
+	mpDearsImGui->UIRender();
 }
 
 void DearsGraphicsEngine::EndRenderImGui()
 {
-	m_pDearsImGui->UIEndRender();
+	mpDearsImGui->UIEndRender();
 }
 
 void DearsGraphicsEngine::LightInitialize(CommonConstantBufferData* _psBufferData, UINT _num)
@@ -838,7 +838,7 @@ Matrix DearsGraphicsEngine::CreateShadowProjectionMatrix(const Light& light, flo
 	if (light.lightType == static_cast<int>(LightEnum::DIRECTIONAL_LIGHT))
 	{
 		// 직교 투영 매트릭스 (Orthographic Projection)
-		return Matrix::CreateOrthographic(m_screenWidth, m_screenHeight, nearPlane, farPlane);
+		return Matrix::CreateOrthographic(mScreenWidth, mScreenHeight, nearPlane, farPlane);
 	}
 	else
 	{

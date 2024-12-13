@@ -10,19 +10,19 @@ public:
 	~GameProcess();
 private:
 	// 윈도우의 좌상단 - 이것으로 창의 위치를 지정할수 있다.
-	int m_WindowPosX;
-	int m_WindowPosY;
+	int mWindowPosX;
+	int mWindowPosY;
 
 	// 화면의 크기
-	int m_ScreenWidth;
-	int m_ScreenHeight;
+	int mScreenWidth;
+	int mScreenHeight;
 
 	// 윈도 관련
-	HWND m_hWnd;
-	MSG m_Msg;
+	HWND mHWnd;
+	MSG mMsg;
 
 	//게임엔진
-	GameEngine* m_pGameEngine;
+	GameEngine* mpGameEngine;
 public:
 	//게임 프로세스
 	HRESULT Initialize(HINSTANCE hInstance);		//게임엔진 초기화

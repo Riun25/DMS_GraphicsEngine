@@ -8,21 +8,21 @@ using Microsoft::WRL::ComPtr;
 
 DearsImGui::DearsImGui(HWND _hWnd, ComPtr<ID3D11Device>& _pDevice, ComPtr<ID3D11DeviceContext>& m_pDeviceContext, int _endScreenWidth, int _endScreenHeight, GraphicsResourceManager* _pResourceManager)
 {
-	m_pInputManager = nullptr;
+	mpInputManager = nullptr;
 
-	m_pDevice = _pDevice;
-	m_endScreenWidth = _endScreenWidth;
-	m_endScreenHeight = _endScreenHeight;
-	window = nullptr;
-	m_pResourceManager = _pResourceManager;
+	mpDevice = _pDevice;
+	mEndScreenWidth = _endScreenWidth;
+	mEndScreenHeight = _endScreenHeight;
+	mpWindow = nullptr;
+	mpResourceManager = _pResourceManager;
 
 	ImGui::CreateContext();
-	io = &ImGui::GetIO(); // 창을 초기화하거나 설정하는데 사용
+	mIO = &ImGui::GetIO(); // 창을 초기화하거나 설정하는데 사용
 /*	io->FontGlobalScale = 0.5f;*/
 	//io->Fonts->TexDesiredWidth = 2048; // 폰트 아틀라스의 텍스처 너비를 제한, 가로 크기가 이 이상으로 넘어가면 세로로 들어감. 너무 크면 GPU에서 못 처리해서 하는 행동.
 
 	ImGui_ImplWin32_Init(_hWnd);
-	ImGui_ImplDX11_Init(m_pDevice.Get(), m_pDeviceContext.Get());
+	ImGui_ImplDX11_Init(mpDevice.Get(), m_pDeviceContext.Get());
 
 	//기본 스타일 설정
 	ImGui::StyleColorsDark();
@@ -42,13 +42,13 @@ void DearsImGui::UILoadFonts(std::string _basePath, std::string _fileName, float
 	// 기본 폰트 크기 변경
 	if (_isKorean)
 	{
-		tempFont = io->Fonts->AddFontFromFileTTF(fontPath.c_str(), _size, nullptr, io->Fonts->GetGlyphRangesKorean());
+		tempFont = mIO->Fonts->AddFontFromFileTTF(fontPath.c_str(), _size, nullptr, mIO->Fonts->GetGlyphRangesKorean());
 	}
 	else
 	{
-		tempFont = io->Fonts->AddFontFromFileTTF(fontPath.c_str(), _size);
+		tempFont = mIO->Fonts->AddFontFromFileTTF(fontPath.c_str(), _size);
 	}
-	m_pResourceManager->Add_Font(_fileName, tempFont); // 리소스 컨테이너에 폰트 추가
+	mpResourceManager->Add_Font(_fileName, tempFont); // 리소스 컨테이너에 폰트 추가
 }
 
 void DearsImGui::UIBuildFonts()
@@ -142,7 +142,7 @@ void DearsImGui::NewUISetWindow(Vector2 _posXY, Vector2 _sizeWH, const std::stri
 
 void DearsImGui::SetUICurrentWindow()
 {
-	window = ImGui::GetCurrentWindow();
+	mpWindow = ImGui::GetCurrentWindow();
 }
 
 void DearsImGui::UIDrawText(Vector2 _posXY, const std::string _text, Vector4 _rgba)
@@ -165,19 +165,19 @@ void DearsImGui::UIDrawText(Vector2 _posXY, const std::string _text, Vector4 _rg
 
 void DearsImGui::UIDrawRect(Vector2 _posXY, Vector2 _sizeWH, Vector4 _rgba, float _rounding, float _thickness)
 {
-	window->DrawList->AddRect(ImVec2(_posXY.x, _posXY.y), ImVec2(_posXY.x + _sizeWH.x, _posXY.y + _sizeWH.y), ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)), _rounding, 0, _thickness);
+	mpWindow->DrawList->AddRect(ImVec2(_posXY.x, _posXY.y), ImVec2(_posXY.x + _sizeWH.x, _posXY.y + _sizeWH.y), ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)), _rounding, 0, _thickness);
 }
 
 void DearsImGui::UIDrawRectFilled(Vector2 _posXY, Vector2 _sizeWH, Vector4 _rgba, float _rounding/* = 0.0f*/)
 {
-	window->DrawList->AddRectFilled(ImVec2(_posXY.x, _posXY.y), ImVec2(_posXY.x + _sizeWH.x, _posXY.y + _sizeWH.y), ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)), _rounding);
+	mpWindow->DrawList->AddRectFilled(ImVec2(_posXY.x, _posXY.y), ImVec2(_posXY.x + _sizeWH.x, _posXY.y + _sizeWH.y), ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)), _rounding);
 }
 
 
 void DearsImGui::UIDrawRectwithBorder(Vector2 _posXY, Vector2 _sizeWH, Vector4 _rgba, float _rounding, float _thickness)
 {
-	window->DrawList->AddRectFilled(ImVec2(_posXY.x, _posXY.y), ImVec2(_posXY.x + _sizeWH.x, _posXY.y + _sizeWH.y), ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)), _rounding);
-	window->DrawList->AddRect(ImVec2(_posXY.x, _posXY.y), ImVec2(_posXY.x + _sizeWH.x, _posXY.y + _sizeWH.y), ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)), _rounding, 0, _thickness);
+	mpWindow->DrawList->AddRectFilled(ImVec2(_posXY.x, _posXY.y), ImVec2(_posXY.x + _sizeWH.x, _posXY.y + _sizeWH.y), ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)), _rounding);
+	mpWindow->DrawList->AddRect(ImVec2(_posXY.x, _posXY.y), ImVec2(_posXY.x + _sizeWH.x, _posXY.y + _sizeWH.y), ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)), _rounding, 0, _thickness);
 }
 
 void DearsImGui::UIFreeRect(Vector2 _posXY1, Vector2 _posXY2, Vector2 _posXY3, Vector2 _posXY4, Vector4 _rgba, float _thickness)
@@ -189,7 +189,7 @@ void DearsImGui::UIFreeRect(Vector2 _posXY1, Vector2 _posXY2, Vector2 _posXY3, V
 
 	ImVec2 points[6] = { p1, p2, p3, p4, p1, p2 };
 
-	window->DrawList->AddPolyline(points, 6, ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)), ImDrawFlags_RoundCornersAll, _thickness);
+	mpWindow->DrawList->AddPolyline(points, 6, ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)), ImDrawFlags_RoundCornersAll, _thickness);
 }
 
 void DearsImGui::UIFreeRectFilled(Vector2 _posXY1, Vector2 _posXY2, Vector2 _posXY3, Vector2 _posXY4, Vector4 _rgba)
@@ -201,7 +201,7 @@ void DearsImGui::UIFreeRectFilled(Vector2 _posXY1, Vector2 _posXY2, Vector2 _pos
 
 	ImVec2 points[4] = { p1, p2, p3, p4 };
 
-	window->DrawList->AddConvexPolyFilled(points, 4, ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)));
+	mpWindow->DrawList->AddConvexPolyFilled(points, 4, ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)));
 }
 
 void DearsImGui::UIFreeRectwithBorder(Vector2 _posXY1, Vector2 _posXY2, Vector2 _posXY3, Vector2 _posXY4, Vector4 _rgba, float _thickness, Vector4 _borderRgba)
@@ -214,13 +214,13 @@ void DearsImGui::UIFreeRectwithBorder(Vector2 _posXY1, Vector2 _posXY2, Vector2 
 	ImVec2 points[4] = { p1, p2, p3, p4 };
 	ImVec2 borderPoints[6] = { p1, p2, p3, p4, p1, p2 };
 
-	window->DrawList->AddConvexPolyFilled(points, 4, ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)));
-	window->DrawList->AddPolyline(borderPoints, 6, ImGui::ColorConvertFloat4ToU32(ImVec4(_borderRgba.x, _borderRgba.y, _borderRgba.z, _borderRgba.w)), ImDrawFlags_RoundCornersAll, _thickness);
+	mpWindow->DrawList->AddConvexPolyFilled(points, 4, ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)));
+	mpWindow->DrawList->AddPolyline(borderPoints, 6, ImGui::ColorConvertFloat4ToU32(ImVec4(_borderRgba.x, _borderRgba.y, _borderRgba.z, _borderRgba.w)), ImDrawFlags_RoundCornersAll, _thickness);
 }
 
 void DearsImGui::UIDrawLine(Vector2 _sPosXY, Vector2 _ePosXY, Vector4 _rgba)
 {
-	window->DrawList->AddLine(ImVec2(_sPosXY.x, _sPosXY.y), ImVec2(_ePosXY.x, _ePosXY.y), ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)));
+	mpWindow->DrawList->AddLine(ImVec2(_sPosXY.x, _sPosXY.y), ImVec2(_ePosXY.x, _ePosXY.y), ImGui::ColorConvertFloat4ToU32(ImVec4(_rgba.x, _rgba.y, _rgba.z, _rgba.w)));
 }
 
 void DearsImGui::UIDrawCircle(Vector2 _posXY, float _radius, Vector4 _rgba)

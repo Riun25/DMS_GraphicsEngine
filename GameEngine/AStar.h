@@ -19,7 +19,7 @@ public:
 		float gCost; // 시작 노드에서 해당 노드까지의 실제 소요 경비값
 		float hCost; // 경험값
 		float GetFCost() const { return gCost + hCost; }
-		Node* parent = nullptr;
+		Node* pParent = nullptr;
 	};
 
 	// Node 비교 연산자 정의
@@ -45,7 +45,7 @@ public:
 
 private:
 	// 현재 위치에서 움직일 수 있는 방향 설정
-	std::vector<Vector2> directions;
+	std::vector<Vector2> mDirectionsVec;
 
 	// 가장 기본적인 AStar
 	std::vector<Vector2> BasicAstar(const Vector2& _startPoint, const Vector2& _goalPoint, const std::vector<Vector2>& obstacles, const Vector2& _mapStart, const Vector2& _mapEnd);

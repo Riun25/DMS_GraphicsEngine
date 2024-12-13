@@ -117,7 +117,7 @@ void FileManager::SaveFolderStructure(const std::filesystem::path& directory)
 			SaveFolderStructure(entry.path());
 		}
 		tempDirData.pInDirFiles = &testList;
-		dirDataList.push_back(&tempDirData);
+		mDirDataList.push_back(&tempDirData);
 	}
 }
 

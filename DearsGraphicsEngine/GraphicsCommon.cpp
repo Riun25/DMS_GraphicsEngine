@@ -6,18 +6,18 @@ namespace Dears {
 	namespace Graphics {
 
 		// Sampler States
-		ComPtr<ID3D11SamplerState> linearWrapSS;
-		ComPtr<ID3D11SamplerState> linearClampSS;
-		ComPtr<ID3D11SamplerState> shadowPointSS;
-		ComPtr<ID3D11SamplerState> shadowCompareSS;
-		vector<ID3D11SamplerState*> sampleStates;
+		ComPtr<ID3D11SamplerState> gpLinearWrapSS;
+		ComPtr<ID3D11SamplerState> gpLinearClampSS;
+		ComPtr<ID3D11SamplerState> gpShadowPointSS;
+		ComPtr<ID3D11SamplerState> gpShadowCompareSS;
+		vector<ID3D11SamplerState*> gSampleStates;
 
 		// Rasterizer States
-		ComPtr<ID3D11RasterizerState> solidRS;
-		ComPtr<ID3D11RasterizerState> wireRS;
+		ComPtr<ID3D11RasterizerState> gpSolidRS;
+		ComPtr<ID3D11RasterizerState> gpWireRS;
 
 		// Depth Stencil States
-		ComPtr<ID3D11DepthStencilState> drawDSS;       // 일반적으로 그리기
+		ComPtr<ID3D11DepthStencilState> gpDrawDSS;       // 일반적으로 그리기
 		ComPtr<ID3D11DepthStencilState> particleDSS;   // 일반적으로 그리기 + 뒷면도 렌더
 
 
@@ -25,14 +25,14 @@ namespace Dears {
 		ComPtr<ID3D11DepthStencilState> drawEdgeDSS;   //tempDSS에서 변경된 stencil을 바탕으로 외곽선을 그림   
 
 		// Shaders
-		ComPtr<ID3D11VertexShader> basicVS;
-		ComPtr<ID3D11VertexShader> animeVS;
-		ComPtr<ID3D11VertexShader> equimentVS;
-		ComPtr<ID3D11VertexShader> skyboxVS;
-		ComPtr<ID3D11VertexShader> depthOnlyVS;
-		ComPtr<ID3D11VertexShader> depthAniOnlyVS;
-		ComPtr<ID3D11VertexShader> depthEquipOnlyVS;
-		ComPtr<ID3D11VertexShader> instanceBasicVS;
+		ComPtr<ID3D11VertexShader> gpBasicVS;
+		ComPtr<ID3D11VertexShader> gpAnimeVS;
+		ComPtr<ID3D11VertexShader> gpEquimentVS;
+		ComPtr<ID3D11VertexShader> gpSkyboxVS;
+		ComPtr<ID3D11VertexShader> gpDepthOnlyVS;
+		ComPtr<ID3D11VertexShader> gpDepthAniOnlyVS;
+		ComPtr<ID3D11VertexShader> gpDepthEquipOnlyVS;
+		ComPtr<ID3D11VertexShader> gpInstanceBasicVS;
 		ComPtr<ID3D11VertexShader> edgeVS;
 		ComPtr<ID3D11VertexShader> testVS;
 		ComPtr<ID3D11VertexShader> waterVS;
@@ -41,8 +41,8 @@ namespace Dears {
 		ComPtr<ID3D11VertexShader> postProcessingVS;
 
 
-		ComPtr<ID3D11PixelShader> basicPS;
-		ComPtr<ID3D11PixelShader> skyboxPS;
+		ComPtr<ID3D11PixelShader> gpBasicPS;
+		ComPtr<ID3D11PixelShader> gpSkyboxPS;
 		ComPtr<ID3D11PixelShader> depthOnlyPS;
 		ComPtr<ID3D11PixelShader> edgePS;
 		ComPtr<ID3D11PixelShader> testPS;
@@ -51,19 +51,19 @@ namespace Dears {
 		ComPtr<ID3D11PixelShader> postProcessingPS;
 
 		//ComputeShader
-		ComPtr<ID3D11ComputeShader> particleComputeShader;
+		ComPtr<ID3D11ComputeShader> gpParticleComputeShader;
 
 
 		// Input Layouts
-		ComPtr<ID3D11InputLayout> basicIL;
-		ComPtr<ID3D11InputLayout> animeIL;
+		ComPtr<ID3D11InputLayout> gpBasicIL;
+		ComPtr<ID3D11InputLayout> gpAnimeIL;
 		ComPtr<ID3D11InputLayout> equimentIL;
-		ComPtr<ID3D11InputLayout> skyboxIL;
-		ComPtr<ID3D11InputLayout> depthOnlyIL;
-		ComPtr<ID3D11InputLayout> depthAniOnlyIL;
-		ComPtr<ID3D11InputLayout> depthEquipOnlyIL;
+		ComPtr<ID3D11InputLayout> gpSkyboxIL;
+		ComPtr<ID3D11InputLayout> gpDepthOnlyIL;
+		ComPtr<ID3D11InputLayout> gpDepthAniOnlyIL;
+		ComPtr<ID3D11InputLayout> gpDepthEquipOnlyIL;
 
-		ComPtr<ID3D11InputLayout> instanceBasicIL;
+		ComPtr<ID3D11InputLayout> gpInstanceBasicIL;
 		ComPtr<ID3D11InputLayout> edgeIL;
 		ComPtr<ID3D11InputLayout> testIL;
 		ComPtr<ID3D11InputLayout> waterIL;
@@ -77,29 +77,29 @@ namespace Dears {
 		ComPtr<ID3D11InputLayout> postProcessingIL;
 
 		// Graphics Pipeline States
-		PipelineStateObject BasicGeometryPSO;
-		PipelineStateObject AnimeGeometryPSO;
-		PipelineStateObject EquipmentGeometryPSO;
-		PipelineStateObject DebugGeometryPSO;
-		PipelineStateObject CubeMapGeometryPSO;
-		PipelineStateObject depthOnlyPSO;
-		PipelineStateObject depthAniOnlyPSO;
-		PipelineStateObject depthEquipOnlyPSO;
-		PipelineStateObject OpacityPSO;
+		PipelineStateObject gBasicGeometryPSO;
+		PipelineStateObject gAnimeGeometryPSO;
+		PipelineStateObject gEquipmentGeometryPSO;
+		PipelineStateObject gDebugGeometryPSO;
+		PipelineStateObject gCubeMapGeometryPSO;
+		PipelineStateObject gDepthOnlyPSO;
+		PipelineStateObject gDepthAniOnlyPSO;
+		PipelineStateObject gDepthEquipOnlyPSO;
+		PipelineStateObject gOpacityPSO;
 
-		PipelineStateObject BasicInstancingPSO;
-		PipelineStateObject PunchingPSO;
-		PipelineStateObject EdgePSO;
-		PipelineStateObject WaterPSO;
+		PipelineStateObject gBasicInstancingPSO;
+		PipelineStateObject gPunchingPSO;
+		PipelineStateObject gEdgePSO;
+		PipelineStateObject gWaterPSO;
 
-		PipelineStateObject TestPSO;
-		PipelineStateObject ParticlePSO;
+		PipelineStateObject gTestPSO;
+		PipelineStateObject gParticlePSO;
 
-		PipelineStateObject samplerPSO;
-		PipelineStateObject postEffectPSO;
+		PipelineStateObject gSamplerPSO;
+		PipelineStateObject gPostEffectPSO;
 
 		// Blend States
-		ComPtr<ID3D11BlendState> OpacityBS;
+		ComPtr<ID3D11BlendState> gpOpacityBS;
 
 
 
@@ -126,11 +126,11 @@ namespace Dears {
 		sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 		sampDesc.MinLOD = 0;
 		sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-		device->CreateSamplerState(&sampDesc, linearWrapSS.GetAddressOf());
+		device->CreateSamplerState(&sampDesc, gpLinearWrapSS.GetAddressOf());
 		sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 		sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 		sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-		device->CreateSamplerState(&sampDesc, linearClampSS.GetAddressOf());
+		device->CreateSamplerState(&sampDesc, gpLinearClampSS.GetAddressOf());
 
 		// shadowPointSS
 		sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -138,7 +138,7 @@ namespace Dears {
 		sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
 		sampDesc.BorderColor[0] = 100.0f; // 큰 Z값
 		sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		device->CreateSamplerState(&sampDesc, shadowPointSS.GetAddressOf());
+		device->CreateSamplerState(&sampDesc, gpShadowPointSS.GetAddressOf());
 
 		// shadowCompareSS, 쉐이더 안에서는 SamplerComparisonState
 		// Filter = "_COMPARISON_" 주의
@@ -149,19 +149,19 @@ namespace Dears {
 		sampDesc.Filter =
 			D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
 		sampDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
-		device->CreateSamplerState(&sampDesc, shadowCompareSS.GetAddressOf());
+		device->CreateSamplerState(&sampDesc, gpShadowCompareSS.GetAddressOf());
 
 		// 샘플러 순서가 "Common.hlsli"에서와 일관성 있어야 함
-		sampleStates.push_back(linearWrapSS.Get());
-		sampleStates.push_back(linearClampSS.Get());
-		sampleStates.push_back(shadowPointSS.Get());
-		sampleStates.push_back(shadowCompareSS.Get());
+		gSampleStates.push_back(gpLinearWrapSS.Get());
+		gSampleStates.push_back(gpLinearClampSS.Get());
+		gSampleStates.push_back(gpShadowPointSS.Get());
+		gSampleStates.push_back(gpShadowCompareSS.Get());
 	}
 
 	void Graphics::InitRasterizerStates(ComPtr<ID3D11Device>& device)
 	{
-		solidRS = RendererHelper::CreateSolidRasterizerState(device);
-		wireRS = RendererHelper::CreateWireRasterizerState(device);
+		gpSolidRS = RendererHelper::CreateSolidRasterizerState(device);
+		gpWireRS = RendererHelper::CreateWireRasterizerState(device);
 	}
 
 	void Graphics::InitBlendStates(ComPtr<ID3D11Device>& device)
@@ -190,7 +190,7 @@ namespace Dears {
 			D3D11_COLOR_WRITE_ENABLE_ALL;												//RGBA 모두에 값을 쓰도록 설정하겠다.
 
 		ThrowIfFailed(
-			device->CreateBlendState(&BlendDesc, OpacityBS.GetAddressOf()));
+			device->CreateBlendState(&BlendDesc, gpOpacityBS.GetAddressOf()));
 	}
 
 	/// <summary>
@@ -221,7 +221,7 @@ namespace Dears {
 		dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_NEVER;							 //
 
 		ThrowIfFailed(
-			device->CreateDepthStencilState(&dsDesc, drawDSS.GetAddressOf()));
+			device->CreateDepthStencilState(&dsDesc, gpDrawDSS.GetAddressOf()));
 
 		dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 		ThrowIfFailed(
@@ -344,35 +344,35 @@ namespace Dears {
 
 		std::string VSfilename = "../DearsGraphicsEngine/Shader/VertexShader.hlsl";
 		RendererHelper::CreateVertexShaderAndInputLayout(device, VSfilename,
-			basicInputElements, basicVS, basicIL);
+			basicInputElements, gpBasicVS, gpBasicIL);
 
 		VSfilename = "../DearsGraphicsEngine/Shader/AniVertexShader.hlsl";
 		RendererHelper::CreateVertexShaderAndInputLayout(device, VSfilename,
-			AnimeInputElements, animeVS, animeIL);
+			AnimeInputElements, gpAnimeVS, gpAnimeIL);
 
 		VSfilename = "../DearsGraphicsEngine/Shader/CubeMapVertexShader.hlsl";
 		RendererHelper::CreateVertexShaderAndInputLayout(device, VSfilename,
-			skyboxInputElements, skyboxVS, skyboxIL);
+			skyboxInputElements, gpSkyboxVS, gpSkyboxIL);
 
 		VSfilename = "../DearsGraphicsEngine/Shader/ShadowVertexShader.hlsl";
 		RendererHelper::CreateVertexShaderAndInputLayout(device, VSfilename,
-			basicInputElements, depthOnlyVS, depthOnlyIL);
+			basicInputElements, gpDepthOnlyVS, gpDepthOnlyIL);
 
 		VSfilename = "../DearsGraphicsEngine/Shader/ShadowAniVertexShader.hlsl";
 		RendererHelper::CreateVertexShaderAndInputLayout(device, VSfilename,
-			AnimeInputElements, depthAniOnlyVS, depthAniOnlyIL);
+			AnimeInputElements, gpDepthAniOnlyVS, gpDepthAniOnlyIL);
 
 		VSfilename = "../DearsGraphicsEngine/Shader/ShadowEquipmentVertexShader.hlsl";
 		RendererHelper::CreateVertexShaderAndInputLayout(device, VSfilename,
-			basicInputElements, depthEquipOnlyVS, depthEquipOnlyIL);
+			basicInputElements, gpDepthEquipOnlyVS, gpDepthEquipOnlyIL);
 
 		VSfilename = "../DearsGraphicsEngine/Shader/EquipmentVertexShader.hlsl";
 		RendererHelper::CreateVertexShaderAndInputLayout(device, VSfilename,
-			EquipmentInputElements, equimentVS, equimentIL);
+			EquipmentInputElements, gpEquimentVS, equimentIL);
 
 		VSfilename = "../DearsGraphicsEngine/Shader/InstanceVertexShader.hlsl";
 		RendererHelper::CreateVertexShaderAndInputLayout(device, VSfilename,
-			BasicInstanceElements, instanceBasicVS, instanceBasicIL);
+			BasicInstanceElements, gpInstanceBasicVS, gpInstanceBasicIL);
 
 		VSfilename = "../DearsGraphicsEngine/Shader/EdgeVertexShader.hlsl";
 		RendererHelper::CreateVertexShaderAndInputLayout(device, VSfilename,
@@ -401,10 +401,10 @@ namespace Dears {
 
 		//Create PixelSahder
 		std::string PSfilename = "../DearsGraphicsEngine/Shader/PixelShader.hlsl";
-		RendererHelper::CreatePixelShader(device, PSfilename, basicPS);
+		RendererHelper::CreatePixelShader(device, PSfilename, gpBasicPS);
 
 		PSfilename = "../DearsGraphicsEngine/Shader/CubeMapPixelShader.hlsl";
-		RendererHelper::CreatePixelShader(device, PSfilename, skyboxPS);
+		RendererHelper::CreatePixelShader(device, PSfilename, gpSkyboxPS);
 
 		PSfilename = "../DearsGraphicsEngine/Shader/ShadowPixelShader.hlsl";
 		RendererHelper::CreatePixelShader(device, PSfilename, depthOnlyPS);
@@ -426,7 +426,7 @@ namespace Dears {
 
 		//Create ComputeShader
 		std::string CSfilename = "../DearsGraphicsEngine/Shader/TestComputeShader.hlsl";
-		RendererHelper::CreateComputeShader(device, CSfilename, particleComputeShader);
+		RendererHelper::CreateComputeShader(device, CSfilename, gpParticleComputeShader);
 
 
 
@@ -437,106 +437,106 @@ namespace Dears {
 	void Graphics::InitPipelineStates(ComPtr<ID3D11Device>& device) {
 
 		// BasicGeometryPSO;
-		BasicGeometryPSO.m_pVertexShader = basicVS;
-		BasicGeometryPSO.m_pInputLayout = basicIL;
-		BasicGeometryPSO.m_pPixelShader = basicPS;
-		BasicGeometryPSO.m_pRasterizerState = solidRS;
-		BasicGeometryPSO.m_pDepthStencilState = drawDSS;
-		BasicGeometryPSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		BasicGeometryPSO.m_pBlendState = OpacityBS;
+		gBasicGeometryPSO.mpVertexShader = gpBasicVS;
+		gBasicGeometryPSO.mpInputLayout = gpBasicIL;
+		gBasicGeometryPSO.mpPixelShader = gpBasicPS;
+		gBasicGeometryPSO.mpRasterizerState = gpSolidRS;
+		gBasicGeometryPSO.mpDepthStencilState = gpDrawDSS;
+		gBasicGeometryPSO.mPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		gBasicGeometryPSO.mpBlendState = gpOpacityBS;
 
 
 		// DebugGeometryPSO
-		DebugGeometryPSO = BasicGeometryPSO;
-		DebugGeometryPSO.m_pRasterizerState = wireRS;
+		gDebugGeometryPSO = gBasicGeometryPSO;
+		gDebugGeometryPSO.mpRasterizerState = gpWireRS;
 
 		// AnimeGeometryPSO
-		AnimeGeometryPSO.m_pVertexShader = animeVS;
-		AnimeGeometryPSO.m_pInputLayout = animeIL;
-		AnimeGeometryPSO.m_pPixelShader = basicPS;
-		AnimeGeometryPSO.m_pRasterizerState = solidRS;
-		AnimeGeometryPSO.m_pDepthStencilState = drawDSS;
-		AnimeGeometryPSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		gAnimeGeometryPSO.mpVertexShader = gpAnimeVS;
+		gAnimeGeometryPSO.mpInputLayout = gpAnimeIL;
+		gAnimeGeometryPSO.mpPixelShader = gpBasicPS;
+		gAnimeGeometryPSO.mpRasterizerState = gpSolidRS;
+		gAnimeGeometryPSO.mpDepthStencilState = gpDrawDSS;
+		gAnimeGeometryPSO.mPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 		// AnimeGeometryPSO
-		EquipmentGeometryPSO.m_pVertexShader = equimentVS;
-		EquipmentGeometryPSO.m_pInputLayout = equimentIL;
-		EquipmentGeometryPSO.m_pPixelShader = basicPS;
-		EquipmentGeometryPSO.m_pRasterizerState = solidRS;
-		EquipmentGeometryPSO.m_pDepthStencilState = drawDSS;
-		EquipmentGeometryPSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		gEquipmentGeometryPSO.mpVertexShader = gpEquimentVS;
+		gEquipmentGeometryPSO.mpInputLayout = equimentIL;
+		gEquipmentGeometryPSO.mpPixelShader = gpBasicPS;
+		gEquipmentGeometryPSO.mpRasterizerState = gpSolidRS;
+		gEquipmentGeometryPSO.mpDepthStencilState = gpDrawDSS;
+		gEquipmentGeometryPSO.mPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-		CubeMapGeometryPSO.m_pVertexShader = skyboxVS;
-		CubeMapGeometryPSO.m_pInputLayout = skyboxIL;
-		CubeMapGeometryPSO.m_pPixelShader = skyboxPS;
-		CubeMapGeometryPSO.m_pRasterizerState = solidRS;
-		CubeMapGeometryPSO.m_pDepthStencilState = drawDSS;
-		CubeMapGeometryPSO.m_primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		gCubeMapGeometryPSO.mpVertexShader = gpSkyboxVS;
+		gCubeMapGeometryPSO.mpInputLayout = gpSkyboxIL;
+		gCubeMapGeometryPSO.mpPixelShader = gpSkyboxPS;
+		gCubeMapGeometryPSO.mpRasterizerState = gpSolidRS;
+		gCubeMapGeometryPSO.mpDepthStencilState = gpDrawDSS;
+		gCubeMapGeometryPSO.mPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 		// depthOnlyPSO
-		depthOnlyPSO = BasicGeometryPSO;
-		depthOnlyPSO.m_pVertexShader = depthOnlyVS;
-		depthOnlyPSO.m_pPixelShader = depthOnlyPS;
+		gDepthOnlyPSO = gBasicGeometryPSO;
+		gDepthOnlyPSO.mpVertexShader = gpDepthOnlyVS;
+		gDepthOnlyPSO.mpPixelShader = depthOnlyPS;
 
 		// depthAniOnlyPSO
-		depthAniOnlyPSO = AnimeGeometryPSO;
-		depthAniOnlyPSO.m_pVertexShader = depthAniOnlyVS;
-		depthAniOnlyPSO.m_pPixelShader = depthOnlyPS;
+		gDepthAniOnlyPSO = gAnimeGeometryPSO;
+		gDepthAniOnlyPSO.mpVertexShader = gpDepthAniOnlyVS;
+		gDepthAniOnlyPSO.mpPixelShader = depthOnlyPS;
 
 		// depthEquipOnlyPSO
-		depthEquipOnlyPSO = BasicGeometryPSO;
-		depthEquipOnlyPSO.m_pVertexShader = depthEquipOnlyVS;
-		depthEquipOnlyPSO.m_pPixelShader = depthOnlyPS;
+		gDepthEquipOnlyPSO = gBasicGeometryPSO;
+		gDepthEquipOnlyPSO.mpVertexShader = gpDepthEquipOnlyVS;
+		gDepthEquipOnlyPSO.mpPixelShader = depthOnlyPS;
 
 		//OpacityPso
-		OpacityPSO = BasicGeometryPSO;
-		OpacityPSO.m_pBlendState = OpacityBS;
+		gOpacityPSO = gBasicGeometryPSO;
+		gOpacityPSO.mpBlendState = gpOpacityBS;
 
 		//InstancingPSO
-		BasicInstancingPSO = BasicGeometryPSO;
-		BasicInstancingPSO.m_pVertexShader = instanceBasicVS;
-		BasicInstancingPSO.m_pInputLayout = instanceBasicIL;
+		gBasicInstancingPSO = gBasicGeometryPSO;
+		gBasicInstancingPSO.mpVertexShader = gpInstanceBasicVS;
+		gBasicInstancingPSO.mpInputLayout = gpInstanceBasicIL;
 		
 		//PunchingPSO
-		PunchingPSO = BasicGeometryPSO;
-		PunchingPSO.m_pVertexShader = depthOnlyVS;
-		PunchingPSO.m_pPixelShader = depthOnlyPS;
-		PunchingPSO.m_pDepthStencilState = punchDSS;
-		PunchingPSO.m_stencilRef = 1;
+		gPunchingPSO = gBasicGeometryPSO;
+		gPunchingPSO.mpVertexShader = gpDepthOnlyVS;
+		gPunchingPSO.mpPixelShader = depthOnlyPS;
+		gPunchingPSO.mpDepthStencilState = punchDSS;
+		gPunchingPSO.mStencilRef = 1;
 
 		//EdgePSO
-		EdgePSO = BasicGeometryPSO;
-		EdgePSO.m_pVertexShader = edgeVS;
-		EdgePSO.m_pPixelShader = edgePS;
-		EdgePSO.m_pDepthStencilState = drawEdgeDSS;
-		EdgePSO.m_stencilRef = 1;
+		gEdgePSO = gBasicGeometryPSO;
+		gEdgePSO.mpVertexShader = edgeVS;
+		gEdgePSO.mpPixelShader = edgePS;
+		gEdgePSO.mpDepthStencilState = drawEdgeDSS;
+		gEdgePSO.mStencilRef = 1;
 
 		//WaterPSO
-		WaterPSO = BasicGeometryPSO;
-		WaterPSO.m_pVertexShader = waterVS;
-		WaterPSO.m_pInputLayout = waterIL;
+		gWaterPSO = gBasicGeometryPSO;
+		gWaterPSO.mpVertexShader = waterVS;
+		gWaterPSO.mpInputLayout = waterIL;
 
 		//TestPSO
-		TestPSO = BasicGeometryPSO;
-		TestPSO.m_pVertexShader = testVS;
-		TestPSO.m_pPixelShader = testPS;
+		gTestPSO = gBasicGeometryPSO;
+		gTestPSO.mpVertexShader = testVS;
+		gTestPSO.mpPixelShader = testPS;
 
-		ParticlePSO = BasicInstancingPSO;
-		ParticlePSO.m_pVertexShader = particleVS;
-		ParticlePSO.m_pInputLayout = particleIL;
-		ParticlePSO.m_pPixelShader = particlePS;
+		gParticlePSO = gBasicInstancingPSO;
+		gParticlePSO.mpVertexShader = particleVS;
+		gParticlePSO.mpInputLayout = particleIL;
+		gParticlePSO.mpPixelShader = particlePS;
 		//ParticlePSO.m_pRasterizerState = wireRS;
-		ParticlePSO.m_pDepthStencilState = particleDSS;
+		gParticlePSO.mpDepthStencilState = particleDSS;
 		
-		samplerPSO = BasicGeometryPSO;
-		samplerPSO.m_pVertexShader = samplerVS;
-		samplerPSO.m_pInputLayout = samplerIL;
-		samplerPSO.m_pPixelShader = samplerPS;
+		gSamplerPSO = gBasicGeometryPSO;
+		gSamplerPSO.mpVertexShader = samplerVS;
+		gSamplerPSO.mpInputLayout = samplerIL;
+		gSamplerPSO.mpPixelShader = samplerPS;
 
-		postEffectPSO = BasicGeometryPSO;
-		postEffectPSO.m_pVertexShader = postProcessingVS;
-		postEffectPSO.m_pInputLayout = postProcessingIL;
-		postEffectPSO.m_pPixelShader = postProcessingPS;
+		gPostEffectPSO = gBasicGeometryPSO;
+		gPostEffectPSO.mpVertexShader = postProcessingVS;
+		gPostEffectPSO.mpInputLayout = postProcessingIL;
+		gPostEffectPSO.mpPixelShader = postProcessingPS;
 	}
 
 }

@@ -30,7 +30,7 @@ private:
 	//std::list<std::string> testList;							// 디렉토리 내의 모든 파일을 저장하는 리스트
 	
 public:
-	std::list<DirData*> dirDataList;								// 모든 디렉토리의 파일 정보를 가진 리스트
+	std::list<DirData*> mDirDataList;								// 모든 디렉토리의 파일 정보를 가진 리스트
 	void Initialize();
 
 public:

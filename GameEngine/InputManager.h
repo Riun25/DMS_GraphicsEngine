@@ -10,8 +10,8 @@ using DirectX::SimpleMath::Vector2;
 class InputManager
 {
 private:
-	static InputManager* instance;
-	static HWND m_hwnd;
+	static InputManager* mpInstance;
+	static HWND mHwnd;
 
 public:							///이 부분 나중에 외부로 뺼지 고민을 좀 해봅시다.
 	struct KeyInfo
@@ -40,19 +40,19 @@ public:
 
 
 	//enum class와 동일하게 들고 있어야 한다.
-	std::vector<int> m_key;
+	std::vector<int> mkeyVec;
 
 private:
-	std::vector<KeyInfo> m_keyInfo;
+	std::vector<KeyInfo> mkeyInfo;
 
 	//마우스 포지션
-	Vector2 m_currentMousePos;
+	Vector2 mCurrentMousePos;
 
 	//이전 프레임의 마우스 포지션
-	Vector2 m_prevMousePos;
+	Vector2 mPrevMousePos;
 
 	//마우스의 움직임 정도
-	DirectX::SimpleMath::Vector2 deltaMousePos;
+	DirectX::SimpleMath::Vector2 mDeltaMousePos;
 
 private:
 	//창의 포커싱 여부를 판별하여 포커싱 상태가 아니라면 모든 입력을 받지 않는다.

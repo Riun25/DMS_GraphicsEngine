@@ -7,32 +7,32 @@
 
 void PipelineStateObject::operator=(const PipelineStateObject& _pso)
 {
-	m_pVertexShader = _pso.m_pVertexShader;
-	m_pPixelShader = _pso.m_pPixelShader;
-	m_pHullShader = _pso.m_pHullShader;
-	m_pDomainShader = _pso.m_pDomainShader;
-	m_pGeometryShader = _pso.m_pGeometryShader;
-	m_pInputLayout = _pso.m_pInputLayout;
+	mpVertexShader = _pso.mpVertexShader;
+	mpPixelShader = _pso.mpPixelShader;
+	mpHullShader = _pso.mpHullShader;
+	mpDomainShader = _pso.mpDomainShader;
+	mpGeometryShader = _pso.mpGeometryShader;
+	mpInputLayout = _pso.mpInputLayout;
 
-	m_pBlendState = _pso.m_pBlendState;
-	m_pDepthStencilState = _pso.m_pDepthStencilState;
-	m_pRasterizerState = _pso.m_pRasterizerState;
-	m_pSamplerState = _pso.m_pSamplerState;
+	mpBlendState = _pso.mpBlendState;
+	mpDepthStencilState = _pso.mpDepthStencilState;
+	mpRasterizerState = _pso.mpRasterizerState;
+	mpSamplerState = _pso.mpSamplerState;
 
-	int blendFactorsize = sizeof(m_blendFactor) / sizeof(m_blendFactor[0]);
+	int blendFactorsize = sizeof(mBlendFactor) / sizeof(mBlendFactor[0]);
 	for (int i = 0; i < blendFactorsize; i++)
 	{
-		m_blendFactor[i] = _pso.m_blendFactor[i];
+		mBlendFactor[i] = _pso.mBlendFactor[i];
 	}
 
-	m_primitiveTopology = _pso.m_primitiveTopology;
+	mPrimitiveTopology = _pso.mPrimitiveTopology;
 }
 
 void PipelineStateObject::SetBlendFactor(const float blendFactor[4])
 {
-	int blendFactorsize = sizeof(m_blendFactor) / sizeof(m_blendFactor[0]);
+	int blendFactorsize = sizeof(mBlendFactor) / sizeof(mBlendFactor[0]);
 	for (int i = 0; i < blendFactorsize; i++)
 	{
-		m_blendFactor[i] = blendFactor[i];
+		mBlendFactor[i] = blendFactor[i];
 	}
 }

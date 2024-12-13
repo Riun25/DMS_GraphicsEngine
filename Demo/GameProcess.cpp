@@ -9,14 +9,14 @@
 
 GameProcess::GameProcess()
 {
-	m_WindowPosX = 0;
-	m_WindowPosY = 0;
-	m_ScreenWidth = 1920;
-	m_ScreenHeight = 1080;
-	m_hWnd = {};
-	m_Msg = {};
+	mWindowPosX = 0;
+	mWindowPosY = 0;
+	mScreenWidth = 1920;
+	mScreenHeight = 1080;
+	mHWnd = {};
+	mMsg = {};
 
-	m_pGameEngine = nullptr;
+	mpGameEngine = nullptr;
 }
 
 GameProcess::~GameProcess()
@@ -45,34 +45,34 @@ HRESULT GameProcess::Initialize(HINSTANCE hInstance)
 
 
 	///Window 창을 생성하는 부분, CreateWindow함수는 주어진 매개변수에 따라 새로운 창을 생성하고, 그 창의 핸들을 반환한다.
-	m_hWnd = CreateWindow(
+	mHWnd = CreateWindow(
 		wc.lpszClassName,												// 앞서 등록한 창클래스의 이름. 이름을 통해 CreateWindow함수는 어떤 창 클래스를 사용하여 창을 생성할지 알수 있다.
 		L"MangoWaffle Graphics",										// 생성될 창의 제목. 클래스의 이름과는 다르다.
 		WS_POPUP,											// 창의 스타일을 설정한다. 무슨 창이 있는지는 가서 한번 봐봐
-		m_WindowPosX,													// 윈도우 좌측 상단의 x 좌표	
-		m_WindowPosY,													// 윈도우 좌측 상단의 y 좌표	
-		m_ScreenWidth,													// 윈도우 가로 방향 해상도	
-		m_ScreenHeight,													// 윈도우 세로 방향 해상도	
+		mWindowPosX,													// 윈도우 좌측 상단의 x 좌표	
+		mWindowPosY,													// 윈도우 좌측 상단의 y 좌표	
+		mScreenWidth,													// 윈도우 가로 방향 해상도	
+		mScreenHeight,													// 윈도우 세로 방향 해상도	
 		NULL,
 		NULL,
 		wc.hInstance,													//앞서 GetModuleHandle(NULL) 함수를 통해 가져온 인스턴스 핸들
 		NULL);
 
-	if (!m_hWnd)
+	if (!mHWnd)
 	{
 		std::cout << "m_hWnd - CreateWindow Error\n";
 		return E_FAIL;
 	}
 
 	// 실제로 그려지는 해상도를 설정하기 위해
-	RECT wr = { m_WindowPosX, m_WindowPosY, m_ScreenWidth, m_ScreenHeight };	// Rect구조체를 사용하여 창의 크기를 결정한다. set the size, but not the position
+	RECT wr = { mWindowPosX, mWindowPosY, mScreenWidth, mScreenHeight };	// Rect구조체를 사용하여 창의 크기를 결정한다. set the size, but not the position
 	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);							// AdjustWindowRect 함수를 호출하여 창의 크기를 조정, adjust the size 함수는 주어진 스타일(WS_OVERLAPPEDWINDOW)에 따라 창의 크기를 조정한다.
 
-	ShowWindow(m_hWnd, SW_SHOWDEFAULT);											// ShowWindow 함수를 호출하여 창을 화면에 표시, hwnd는 앞서 CreateWindow 함수를 통해 생성된 창의 핸들, SW_SHOWDEFAULT는 창을 기본 상태로 표시하도록 지시
-	UpdateWindow(m_hWnd);														// UpdateWindow 함수를 호출하여 창을 즉시 업데이트
+	ShowWindow(mHWnd, SW_SHOWDEFAULT);											// ShowWindow 함수를 호출하여 창을 화면에 표시, hwnd는 앞서 CreateWindow 함수를 통해 생성된 창의 핸들, SW_SHOWDEFAULT는 창을 기본 상태로 표시하도록 지시
+	UpdateWindow(mHWnd);														// UpdateWindow 함수를 호출하여 창을 즉시 업데이트
 
-	m_pGameEngine = new GameEngine(m_hWnd, m_ScreenWidth, m_ScreenHeight);
-	m_pGameEngine->Initialize();
+	mpGameEngine = new GameEngine(mHWnd, mScreenWidth, mScreenHeight);
+	mpGameEngine->Initialize();
 	return S_OK;
 }
 
@@ -80,23 +80,23 @@ void GameProcess::Loop()
 {
 	while (true)
 	{
-		if (PeekMessage(&m_Msg, NULL, 0, 0, PM_REMOVE))
+		if (PeekMessage(&mMsg, NULL, 0, 0, PM_REMOVE))
 		{
-			if (m_Msg.message == WM_QUIT) break;
+			if (mMsg.message == WM_QUIT) break;
 
 
-			DispatchMessage(&m_Msg);
+			DispatchMessage(&mMsg);
 		}
 
 		//게임엔진의 루프로 들어간다. 
-		m_pGameEngine->GameLoop();
+		mpGameEngine->GameLoop();
 	}
 
 }
 
 void GameProcess::Finalize()
 {
-	delete m_pGameEngine;
+	delete mpGameEngine;
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

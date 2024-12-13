@@ -136,25 +136,25 @@ void GraphicsResourceManager::AddModel(std::string _basePath, std::string _fileN
 		{
 			for (int i = 0; i < tempModel->mNumMesh; i++)
 			{
-				auto& mesh = tempModel->mMeshData[i];
-				if (mesh.mVertices)
+				auto& mesh = tempModel->mpMeshData[i];
+				if (mesh.mpVertices)
 				{
-					ComPtr<ID3D11Buffer> tempVertexBuffer = RendererHelper::CreateVertexBuffer(mpDevice, mesh.mNumVertices, mesh.mVertices);
+					ComPtr<ID3D11Buffer> tempVertexBuffer = RendererHelper::CreateVertexBuffer(mpDevice, mesh.mNumVertices, mesh.mpVertices);
 					mpGraphicsResourceContainer->Add_VertexBuffer(mesh.mMeshName, tempVertexBuffer);
 					//delete[] mesh.mVertices;
 					//mesh.mVertices = nullptr;
 				}
-				if (mesh.mIndices)
+				if (mesh.mpIndices)
 				{
-					ComPtr<ID3D11Buffer> tempIndexBuffer = RendererHelper::CreateIndexBuffer(mpDevice, mesh.mNumIndices, mesh.mIndices);
+					ComPtr<ID3D11Buffer> tempIndexBuffer = RendererHelper::CreateIndexBuffer(mpDevice, mesh.mNumIndices, mesh.mpIndices);
 					mpGraphicsResourceContainer->Add_IndexBuffer(mesh.mMeshName, tempIndexBuffer);
 					mpGraphicsResourceContainer->Add_NumIndex(mesh.mMeshName, mesh.mNumIndices);
 				}
-				if (mesh.mBone)
+				if (mesh.mpBone)
 				{
 					for (unsigned int j = 0; j < mesh.mNumBones; j++)
 					{
-						auto& bone = mesh.mBone[j];
+						auto& bone = mesh.mpBone[j];
 						mpGraphicsResourceContainer->Add_BoneName(mesh.mMeshName, bone.mBoneName);
 						//DEBUG_LOG(bone.mBoneName);
 					}

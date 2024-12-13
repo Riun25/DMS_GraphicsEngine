@@ -10,20 +10,20 @@ public:
 	TimeManager();
 
 private:
-	double m_secondsPerCount;
-	double m_deltaTime;
+	double mSecondsPerCount;
+	double mDeltaTime;
 
-	__int64 m_baseTime;
-	__int64 m_pausedTime;
-	__int64 m_stopTime;
-	__int64 m_previousTime;
-	__int64 m_currentTime;
+	__int64 mBaseTime;
+	__int64 mPausedTime;
+	__int64 mStopTime;
+	__int64 mPreviousTime;
+	__int64 mCurrentTime;
 
 	bool m_isStopped;
 
 public:
 	// 싱글톤 객체의 유일한 인스턴스를 저장하기 위한 정적 멤버 변수
-	static TimeManager* m_pInstance;
+	static TimeManager* mpInstance;
 
 public:
 	// 정적 멤버 함수를 통해 싱글톤 객체를 얻을 수 있도록 함

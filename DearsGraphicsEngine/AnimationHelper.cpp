@@ -58,16 +58,16 @@ void AnimationHelper::UpdateBoneConstant(Model* _targetModel, Animation* _target
 	}
 
 	// 애니메이션 변환 행렬 계산
-	CalculateTransforms(_targetModel->mRootNode, _targetAnimation, animationTick);
+	CalculateTransforms(_targetModel->mpRootNode, _targetAnimation, animationTick);
 
 	for (unsigned int i = 0; i < _targetModel->mNumMesh; i++)
 	{
-		auto& mesh = _targetModel->mMeshData[i];
+		auto& mesh = _targetModel->mpMeshData[i];
 
 		for (unsigned int j = 0; j < mesh.mNumBones; j++)
 		{
-			auto& bone = mesh.mBone[j];
-			auto finalTransform = bone.mOffsetMatrix * bone.mTargetNode->mTransformation * bone.mTargetNode->mWorldTransformation;
+			auto& bone = mesh.mpBone[j];
+			auto finalTransform = bone.mOffsetMatrix * bone.mpTargetNode->mTransformation * bone.mpTargetNode->mWorldTransformation;
 
 			_vsBoneConstantBuffer.bone[j] = finalTransform.Transpose();
 		}
@@ -88,12 +88,12 @@ bool AnimationHelper::UpdateBoneConstant(Model* _targetModel, Animation* _target
 		DEBUG_LOG("targetAnimation");
 		for (int i = 0; i < _targetAnimation->mNumChannels; i++)
 		{
-			DEBUG_LOG(_targetAnimation->mChannels[i].mName);
+			DEBUG_LOG(_targetAnimation->mpChannels[i].mName);
 		}
 		DEBUG_LOG("NextTargetAnimation");
 		for (int i = 0; i < _nextTargetAnimation->mNumChannels; i++)
 		{
-			DEBUG_LOG(_nextTargetAnimation->mChannels[i].mName);
+			DEBUG_LOG(_nextTargetAnimation->mpChannels[i].mName);
 
 		}
 		return false;
@@ -123,16 +123,16 @@ bool AnimationHelper::UpdateBoneConstant(Model* _targetModel, Animation* _target
 	}
 
 	// 애니메이션 변환 행렬 계산 -> 위의 함수와는 좀 달라야한다.
-	CalculateTransforms(_targetModel->mRootNode, _targetAnimation, _nextTargetAnimation, animationTick, nextAnimationTick);					//애니메이션의 보간을 수행한다. ->Node안의 값을 계산
+	CalculateTransforms(_targetModel->mpRootNode, _targetAnimation, _nextTargetAnimation, animationTick, nextAnimationTick);					//애니메이션의 보간을 수행한다. ->Node안의 값을 계산
 
 	for (unsigned int i = 0; i < _targetModel->mNumMesh; i++)
 	{
-		auto& mesh = _targetModel->mMeshData[i];
+		auto& mesh = _targetModel->mpMeshData[i];
 
 		for (unsigned int j = 0; j < mesh.mNumBones; j++)
 		{
-			auto& bone = mesh.mBone[j];
-			auto finalTransform = bone.mOffsetMatrix * bone.mTargetNode->mTransformation * bone.mTargetNode->mWorldTransformation;
+			auto& bone = mesh.mpBone[j];
+			auto finalTransform = bone.mOffsetMatrix * bone.mpTargetNode->mTransformation * bone.mpTargetNode->mWorldTransformation;
 			_vsBoneConstantBuffer.bone[j] = finalTransform.Transpose();
 		}
 	}
@@ -150,9 +150,9 @@ void AnimationHelper::CalculateTransforms(Node* _node, const Animation* _animati
 	NodeAnimation* targetNodeAnimation = nullptr;
 	for (unsigned int i = 0; i < _animationData->mNumChannels; i++)		//노드 애니메이션 채널을 돌며 타겟노드를 찾는다.
 	{
-		if (_node->mNodeName == _animationData->mChannels[i].mName)
+		if (_node->mNodeName == _animationData->mpChannels[i].mName)
 		{
-			targetNodeAnimation = &_animationData->mChannels[i];
+			targetNodeAnimation = &_animationData->mpChannels[i];
 			break;
 		}
 	}
@@ -161,15 +161,15 @@ void AnimationHelper::CalculateTransforms(Node* _node, const Animation* _animati
 	Matrix& worldTransform = _node->mWorldTransformation;
 	if (targetNodeAnimation)
 	{
-		auto [prevPosKey, nextPosKey] = FindAdjacentKeys(targetNodeAnimation->mPosKey, targetNodeAnimation->mNumPosKeys, _animationTimeInSeconds);
+		auto [prevPosKey, nextPosKey] = FindAdjacentKeys(targetNodeAnimation->mpPosKey, targetNodeAnimation->mNumPosKeys, _animationTimeInSeconds);
 		double factorPos = CalculateFactor(prevPosKey.mTime, nextPosKey.mTime, _animationTimeInSeconds);
 		Vector3 interpolatedPosition = Lerp(prevPosKey.mValue, nextPosKey.mValue, factorPos);
 
-		auto [prevRotKey, nextRotKey] = FindAdjacentKeys(targetNodeAnimation->mRotKey, targetNodeAnimation->mNumRotKeys, _animationTimeInSeconds);
+		auto [prevRotKey, nextRotKey] = FindAdjacentKeys(targetNodeAnimation->mpRotKey, targetNodeAnimation->mNumRotKeys, _animationTimeInSeconds);
 		double factorRot = CalculateFactor(prevRotKey.mTime, nextRotKey.mTime, _animationTimeInSeconds);
 		Quaternion interpolatedRotation = Slerp(prevRotKey.mValue, nextRotKey.mValue, factorRot);
 
-		auto [prevSclKey, nextSclKey] = FindAdjacentKeys(targetNodeAnimation->mScaKey, targetNodeAnimation->mNumScaKeys, _animationTimeInSeconds);
+		auto [prevSclKey, nextSclKey] = FindAdjacentKeys(targetNodeAnimation->mpScaKey, targetNodeAnimation->mNumScaKeys, _animationTimeInSeconds);
 		double factorScl = CalculateFactor(prevSclKey.mTime, nextSclKey.mTime, _animationTimeInSeconds);
 		Vector3 interpolatedScale = Lerp(prevSclKey.mValue, nextSclKey.mValue, factorScl);
 
@@ -196,10 +196,10 @@ void AnimationHelper::CalculateTransforms(Node* _node, const Animation* _animati
 
 	for (unsigned int i = 0; i < _animationData->mNumChannels; i++)
 	{
-		if (_node->mNodeName == _animationData->mChannels[i].mName)
+		if (_node->mNodeName == _animationData->mpChannels[i].mName)
 		{
-			targetNodeAnimation = &_animationData->mChannels[i];
-			nextTargetNodeAnimation = &_nextAnimationData->mChannels[i];
+			targetNodeAnimation = &_animationData->mpChannels[i];
+			nextTargetNodeAnimation = &_nextAnimationData->mpChannels[i];
 			break;
 		}
 	}
@@ -213,15 +213,15 @@ void AnimationHelper::CalculateTransforms(Node* _node, const Animation* _animati
 
 	if (targetNodeAnimation)
 	{
-		auto [prevPosKey, nextPosKey] = FindAdjacentKeys(targetNodeAnimation->mPosKey, targetNodeAnimation->mNumPosKeys, _animationTimeInSeconds);
+		auto [prevPosKey, nextPosKey] = FindAdjacentKeys(targetNodeAnimation->mpPosKey, targetNodeAnimation->mNumPosKeys, _animationTimeInSeconds);
 		double factorPos = CalculateFactor(prevPosKey.mTime, nextPosKey.mTime, _animationTimeInSeconds);
 		Vector3 interpolatedPosition = Lerp(prevPosKey.mValue, nextPosKey.mValue, factorPos);
 
-		auto [prevRotKey, nextRotKey] = FindAdjacentKeys(targetNodeAnimation->mRotKey, targetNodeAnimation->mNumRotKeys, _animationTimeInSeconds);
+		auto [prevRotKey, nextRotKey] = FindAdjacentKeys(targetNodeAnimation->mpRotKey, targetNodeAnimation->mNumRotKeys, _animationTimeInSeconds);
 		double factorRot = CalculateFactor(prevRotKey.mTime, nextRotKey.mTime, _animationTimeInSeconds);
 		Quaternion interpolatedRotation = Slerp(prevRotKey.mValue, nextRotKey.mValue, factorRot);
 
-		auto [prevSclKey, nextSclKey] = FindAdjacentKeys(targetNodeAnimation->mScaKey, targetNodeAnimation->mNumScaKeys, _animationTimeInSeconds);
+		auto [prevSclKey, nextSclKey] = FindAdjacentKeys(targetNodeAnimation->mpScaKey, targetNodeAnimation->mNumScaKeys, _animationTimeInSeconds);
 		double factorScl = CalculateFactor(prevSclKey.mTime, nextSclKey.mTime, _animationTimeInSeconds);
 		Vector3 interpolatedScale = Lerp(prevSclKey.mValue, nextSclKey.mValue, factorScl);
 
@@ -236,15 +236,15 @@ void AnimationHelper::CalculateTransforms(Node* _node, const Animation* _animati
 
 	if (nextTargetNodeAnimation)
 	{
-		auto [prevPosKey, nextPosKey] = FindAdjacentKeys(nextTargetNodeAnimation->mPosKey, nextTargetNodeAnimation->mNumPosKeys, _nextAnimationTimeInSeconds);
+		auto [prevPosKey, nextPosKey] = FindAdjacentKeys(nextTargetNodeAnimation->mpPosKey, nextTargetNodeAnimation->mNumPosKeys, _nextAnimationTimeInSeconds);
 		double factorPos = CalculateFactor(prevPosKey.mTime, nextPosKey.mTime, _nextAnimationTimeInSeconds);
 		Vector3 interpolatedPosition = Lerp(prevPosKey.mValue, nextPosKey.mValue, factorPos);
 
-		auto [prevRotKey, nextRotKey] = FindAdjacentKeys(nextTargetNodeAnimation->mRotKey, nextTargetNodeAnimation->mNumRotKeys, _nextAnimationTimeInSeconds);
+		auto [prevRotKey, nextRotKey] = FindAdjacentKeys(nextTargetNodeAnimation->mpRotKey, nextTargetNodeAnimation->mNumRotKeys, _nextAnimationTimeInSeconds);
 		double factorRot = CalculateFactor(prevRotKey.mTime, nextRotKey.mTime, _nextAnimationTimeInSeconds);
 		Quaternion interpolatedRotation = Slerp(prevRotKey.mValue, nextRotKey.mValue, factorRot);
 
-		auto [prevSclKey, nextSclKey] = FindAdjacentKeys(nextTargetNodeAnimation->mScaKey, nextTargetNodeAnimation->mNumScaKeys, _nextAnimationTimeInSeconds);
+		auto [prevSclKey, nextSclKey] = FindAdjacentKeys(nextTargetNodeAnimation->mpScaKey, nextTargetNodeAnimation->mNumScaKeys, _nextAnimationTimeInSeconds);
 		double factorScl = CalculateFactor(prevSclKey.mTime, nextSclKey.mTime, _nextAnimationTimeInSeconds);
 		Vector3 interpolatedScale = Lerp(prevSclKey.mValue, nextSclKey.mValue, factorScl);
 

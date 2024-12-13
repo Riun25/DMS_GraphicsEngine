@@ -2,7 +2,7 @@
 #include "ModelInfo.h"
 
 NodeAnimation::NodeAnimation() : mNumPosKeys(0), mNumRotKeys(0), mNumScaKeys(0),
-mPosKey(nullptr), mRotKey(nullptr), mScaKey(nullptr)/*, mTargetNode(nullptr)*/
+mpPosKey(nullptr), mpRotKey(nullptr), mpScaKey(nullptr)/*, mTargetNode(nullptr)*/
 {
 }
 
@@ -10,32 +10,32 @@ mPosKey(nullptr), mRotKey(nullptr), mScaKey(nullptr)/*, mTargetNode(nullptr)*/
 NodeAnimation::~NodeAnimation()
 {
 	static int i = 0;
-	if (mPosKey)
+	if (mpPosKey)
 	{
-		delete[] mPosKey;
-		mPosKey = nullptr;
+		delete[] mpPosKey;
+		mpPosKey = nullptr;
 	}
-	if (mRotKey)
+	if (mpRotKey)
 	{
-		delete[] mRotKey;
-		mRotKey = nullptr;
+		delete[] mpRotKey;
+		mpRotKey = nullptr;
 	}
-	if (mScaKey)
+	if (mpScaKey)
 	{
-		delete[] mScaKey;
-		mScaKey = nullptr;
+		delete[] mpScaKey;
+		mpScaKey = nullptr;
 	}
 }
 
-Animation::Animation() : mName{}, mDuration{ 0 }, mTicksPerSecond{ 0 }, mNumChannels{ 0 }, mChannels{ nullptr }
+Animation::Animation() : mName{}, mDuration{ 0 }, mTicksPerSecond{ 0 }, mNumChannels{ 0 }, mpChannels{ nullptr }
 {
 }
 
 Animation::~Animation()
 {
-	if (mChannels != nullptr)
+	if (mpChannels != nullptr)
 	{
-		delete[] mChannels;
+		delete[] mpChannels;
 	}
 }
 
@@ -51,7 +51,7 @@ Node::~Node()
 	}
 }
 
-Bone::Bone() : mBoneName{}, mTargetNode{ nullptr }, mOffsetMatrix{}, mNumWeight{ 0 }, mpVertexWeight{ nullptr }
+Bone::Bone() : mBoneName{}, mpTargetNode{ nullptr }, mOffsetMatrix{}, mNumWeight{ 0 }, mpVertexWeight{ nullptr }
 {
 }
 
@@ -61,41 +61,41 @@ Bone::~Bone()
 	delete[] mpVertexWeight;
 }
 
-Mesh::Mesh() : mMeshName{}, mNumVertices{ 0 }, mVertices{ nullptr }, mNumIndices{ 0 }, mIndices{ nullptr },
-/*mTextureName{ nullptr },*/ mNumBones{ 0 }, mBone{ nullptr }
+Mesh::Mesh() : mMeshName{}, mNumVertices{ 0 }, mpVertices{ nullptr }, mNumIndices{ 0 }, mpIndices{ nullptr },
+/*mTextureName{ nullptr },*/ mNumBones{ 0 }, mpBone{ nullptr }
 {
 }
 
 Mesh::~Mesh()
 {
-	if (mVertices)
+	if (mpVertices)
 	{
-		delete[] mVertices;
+		delete[] mpVertices;
 	}
-	if (mIndices)
+	if (mpIndices)
 	{
-		delete[] mIndices;
+		delete[] mpIndices;
 	}
-	if (mBone)
+	if (mpBone)
 	{
-		delete[] mBone;
+		delete[] mpBone;
 	}
 }
 
-Model::Model() : mRootNode{ nullptr }, mNumMesh{ 0 }, mMeshData{ nullptr }//, mNumAnimation{ 0 }, mAnimation{ nullptr }
+Model::Model() : mpRootNode{ nullptr }, mNumMesh{ 0 }, mpMeshData{ nullptr }//, mNumAnimation{ 0 }, mAnimation{ nullptr }
 {
 }
 
 Model::~Model()
 {
-	if (mRootNode)
+	if (mpRootNode)
 	{
-		delete mRootNode;
+		delete mpRootNode;
 	}
 
-	if (mMeshData)
+	if (mpMeshData)
 	{
-		delete[] mMeshData;
+		delete[] mpMeshData;
 	}
 }
 

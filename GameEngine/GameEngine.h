@@ -24,18 +24,18 @@ public:
 	~GameEngine();
 
 private:
-	HWND m_hWnd;
-	int m_screenWidth;
-	int m_screenHeight;
+	HWND mHWnd;
+	int mScreenWidth;
+	int mScreenHeight;
 
-	TimeManager* m_pTimeManager;
-	InputManager* m_pInputManager;
-	FileManager* m_pFileManager;
-	DearsGraphicsEngine* m_pDearsGraphicsEngine;
-	EasingFunc* tempEasing;
+	TimeManager* mpTimeManager;
+	InputManager* mpInputManager;
+	FileManager* mpFileManager;
+	DearsGraphicsEngine* mpDearsGraphicsEngine;
+	EasingFunc* mpEasingFunc;
 
-	Camera* tempCamera;
-	Camera* lightCamera;
+	Camera* mpCommonCamera;
+	Camera* mpLightCamera;
 
 	tempObject* tempObject1;
 	tempObject* tempObject2;
@@ -48,23 +48,23 @@ private:
 	tempObject* tempObject9;
 
 	// AStar
-	AStar* tempAStar;
-	std::vector<Vector2> tempRawPath;
-	Vector3 nextPos;
-	size_t pathIndex = 0;
+	AStar* mpAStar;
+	std::vector<Vector2> mRawPath;
+	Vector3 mNextPos;
+	size_t mPathIndex = 0;
 
 	//UI tweening
-	Vector2 uiPoint;
-	Vector2 uiPoint2;
+	Vector2 mUIPoint;
+	Vector2 mUIPoint2;
 public:
 	//모델의 컨스턴트 데이터 게임엔진에서 자료구조화 시켜 쓸것.
-	CommonConstantBufferData tempCCConstantBuffer;
+	CommonConstantBufferData mCConstantBuffer;
 	//조명의 위치를 참고하는 commonConstant
-	CommonConstantBufferData tempLightCConstantBuffer;
+	CommonConstantBufferData mLightCConstantBuffer;
 
-	PsShadowConstantBufferData tempPSShadowConstantData;
+	PsShadowConstantBufferData mPSShadowConstantData;
 
-	float opacityValue[4] = { 1.0,1.0,1.0,1.0 };
+	float mOpacityValue[4] = { 1.0,1.0,1.0,1.0 };
 public:
 	//그래픽스 엔진, 물리엔진 등의 객체를 생성한다.
 	void Initialize();

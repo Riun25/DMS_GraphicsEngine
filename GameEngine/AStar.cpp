@@ -2,7 +2,7 @@
 
 AStar::AStar()
 {
-	directions =
+	mDirectionsVec =
 	{
 		// sqrt(2) 중간 우선
 		{ 1, 1}, { 1,-1}, {-1, 1}, {-1,-1},
@@ -75,7 +75,7 @@ std::vector<Vector2> AStar::BasicAstar(const Vector2& _startPoint, const Vector2
 			while (currentNode)
 			{
 				path.push_back(currentNode->position);
-				currentNode = currentNode->parent;
+				currentNode = currentNode->pParent;
 			}
 			std::reverse(path.begin(), path.end());
 
@@ -87,7 +87,7 @@ std::vector<Vector2> AStar::BasicAstar(const Vector2& _startPoint, const Vector2
 			return path;
 		}
 
-		for (const auto& dir : directions)
+		for (const auto& dir : mDirectionsVec)
 		{
 			Vector2 neighborPos = currentNode->position + dir;
 
@@ -107,7 +107,7 @@ std::vector<Vector2> AStar::BasicAstar(const Vector2& _startPoint, const Vector2
 				// 디버깅을 위해 남겨둠
 				//std::cout << neighborNode->position.x << " " << neighborNode->position.y << " " << neighborNode->position.z << ", " << neighborNode->gCost << std::endl;
 				neighborNode->hCost = Distance(neighborPos, _goalPoint);
-				neighborNode->parent = currentNode;
+				neighborNode->pParent = currentNode;
 				mOpenList.push(neighborNode);
 				mAllNodes[neighborPos] = neighborNode;
 			}
@@ -115,7 +115,7 @@ std::vector<Vector2> AStar::BasicAstar(const Vector2& _startPoint, const Vector2
 			{
 				Node* neighborNode = it->second;
 				neighborNode->gCost = newGCost;
-				neighborNode->parent = currentNode;
+				neighborNode->pParent = currentNode;
 				mOpenList.push(neighborNode);
 			}
 		}
